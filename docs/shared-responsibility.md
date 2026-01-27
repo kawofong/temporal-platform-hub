@@ -2,7 +2,7 @@
 sidebar_position: 8
 id: shared-responsibility
 title: Shared Responsibility Model
-sidebar_label: Shared Responsibility
+sidebar_label: 🤝 Shared Responsibility
 description: Defining team responsibilities for building and managing Temporal applications between Platform and Application teams.
 toc_max_heading_level: 3
 ---

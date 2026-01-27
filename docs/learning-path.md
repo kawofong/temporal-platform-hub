@@ -2,7 +2,7 @@
 sidebar_position: 5
 id: learning-path
 title: Learning Paths
-sidebar_label: Learning Paths
+sidebar_label: 📚 Learning Paths
 description: Structured learning paths from foundational concepts to advanced patterns, tailored for Software Developers, AI Developers, and Platform Engineers.
 toc_max_heading_level: 3
 ---

@@ -3,7 +3,7 @@ slug: /
 sidebar_position: 1
 id: index
 title: Temporal Knowledge Hub
-sidebar_label: Home
+sidebar_label: 🏠 Home
 description: A foundational template for organizations to create an internal knowledge base about the Temporal Platform, designed for customization by internal Temporal Platform teams.
 toc_max_heading_level: 3
 ---

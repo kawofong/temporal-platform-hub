@@ -2,7 +2,7 @@
 sidebar_position: 10
 id: troubleshooting
 title: Troubleshooting
-sidebar_label: Troubleshooting
+sidebar_label: 🔧 Troubleshooting
 description: How to observe and troubleshoot Temporal Workflows and Workers across environments.
 toc_max_heading_level: 3
 ---

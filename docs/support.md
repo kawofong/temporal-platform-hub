@@ -2,7 +2,7 @@
 sidebar_position: 11
 id: support
 title: Get Help from the Temporal Team
-sidebar_label: Support
+sidebar_label: 🆘 Support
 description: Temporal Cloud support model, how to submit tickets, and expert-led sessions available through Enterprise support.
 toc_max_heading_level: 3
 ---

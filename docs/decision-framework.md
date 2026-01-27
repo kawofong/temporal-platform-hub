@@ -2,7 +2,7 @@
 sidebar_position: 3
 id: decision-framework
 title: Temporal Decision Framework
-sidebar_label: Decision Framework
+sidebar_label: 🧭 Decision Framework
 description: A guide to help you determine whether Temporal is the right solution for your use case.
 toc_max_heading_level: 3
 ---

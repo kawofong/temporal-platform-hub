@@ -2,7 +2,7 @@
 sidebar_position: 12
 id: faqs
 title: Frequently Asked Questions
-sidebar_label: FAQs
+sidebar_label: ❓ FAQs
 description: Common questions and answers about using Temporal at your organization.
 toc_max_heading_level: 3
 ---

@@ -2,7 +2,7 @@
 sidebar_position: 4
 id: getting-started
 title: Getting Started with Temporal
-sidebar_label: Getting Started
+sidebar_label: 🚀 Getting Started
 description: A self-service tutorial to set up your Temporal development environment and run your first Workflow.
 toc_max_heading_level: 3
 ---

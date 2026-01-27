@@ -2,7 +2,7 @@
 sidebar_position: 9
 id: patterns
 title: Temporal Patterns
-sidebar_label: Patterns
+sidebar_label: 🧩 Patterns
 description: Common Temporal Workflow design patterns with code samples for Python and Java.
 toc_max_heading_level: 3
 ---

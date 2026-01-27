@@ -2,7 +2,7 @@
 sidebar_position: 6
 id: architecture
 title: Temporal Architecture
-sidebar_label: Architecture
+sidebar_label: 🏗️ Architecture
 description: Enterprise Temporal architecture covering Namespace conventions, Worker deployment patterns, network connectivity, and disaster recovery procedures.
 toc_max_heading_level: 3
 ---

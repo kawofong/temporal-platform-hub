@@ -2,7 +2,7 @@
 sidebar_position: 2
 id: temporal-overview
 title: Temporal Overview
-sidebar_label: Temporal Overview
+sidebar_label: 🔭 Temporal Overview
 description: Learn what Temporal is, why users love it, and how it delivers business value across various industries.
 toc_max_heading_level: 3
 ---

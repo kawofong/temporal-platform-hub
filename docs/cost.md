@@ -2,7 +2,7 @@
 sidebar_position: 7
 id: cost
 title: Temporal Cloud Cost
-sidebar_label: Cost
+sidebar_label: 💰 Cost
 description: Understanding Temporal Cloud's consumption-based pricing model and tips for building cost-effective Workflows.
 toc_max_heading_level: 3
 ---
