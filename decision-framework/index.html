@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-decision-framework" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.9.2">
+<title data-rh="true">Temporal Decision Framework | Temporal Platform Hub</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://your-docusaurus-site.example.com/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://your-docusaurus-site.example.com/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://your-docusaurus-site.example.com/decision-framework"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Temporal Decision Framework | Temporal Platform Hub"><meta data-rh="true" name="description" content="A guide to help you determine whether Temporal is the right solution for your use case."><meta data-rh="true" property="og:description" content="A guide to help you determine whether Temporal is the right solution for your use case."><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://your-docusaurus-site.example.com/decision-framework"><link data-rh="true" rel="alternate" href="https://your-docusaurus-site.example.com/decision-framework" hreflang="en"><link data-rh="true" rel="alternate" href="https://your-docusaurus-site.example.com/decision-framework" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Decision Framework","item":"https://your-docusaurus-site.example.com/decision-framework"}]}</script><link rel="stylesheet" href="/assets/css/styles.b0092fe2.css">
+<script src="/assets/js/runtime~main.3c03d711.js" defer="defer"></script>
+<script src="/assets/js/main.2d0033f4.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/img/temporal_logo_dark.png"><link rel="preload" as="image" href="/img/temporal_logo_light.png"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/temporal_logo_dark.png" alt="Temporal Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/temporal_logo_light.png" alt="Temporal Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate"></b></a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/kawofong/temporal-platform-hub" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/"><span title="Home" class="linkLabel_WmDU">Home</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/temporal-overview"><span title="Temporal Overview" class="linkLabel_WmDU">Temporal Overview</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/decision-framework"><span title="Decision Framework" class="linkLabel_WmDU">Decision Framework</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/getting-started"><span title="Getting Started" class="linkLabel_WmDU">Getting Started</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/learning-path"><span title="Learning Paths" class="linkLabel_WmDU">Learning Paths</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/architecture"><span title="Architecture" class="linkLabel_WmDU">Architecture</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/cost"><span title="Cost" class="linkLabel_WmDU">Cost</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/shared-responsibility"><span title="Shared Responsibility" class="linkLabel_WmDU">Shared Responsibility</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/patterns"><span title="Patterns" class="linkLabel_WmDU">Patterns</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/troubleshooting"><span title="Troubleshooting" class="linkLabel_WmDU">Troubleshooting</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/support"><span title="Support" class="linkLabel_WmDU">Support</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/faqs"><span title="FAQs" class="linkLabel_WmDU">FAQs</span></a></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Decision Framework</span></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Temporal Decision Framework</h1></header><div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>info</div><div class="admonitionContent_BuS1"><p>This page is part of the <a class="" href="/">Temporal Knowledge Hub</a>.</p></div></div>
+<p>This guide helps you quickly determine whether Temporal is the right solution for your use case.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="temporal-decision-framework">Temporal decision framework<a href="#temporal-decision-framework" class="hash-link" aria-label="Direct link to Temporal decision framework" title="Direct link to Temporal decision framework" translate="no">​</a></h2>
+<div class="theme-admonition theme-admonition-note admonition_xJq3 alert alert--secondary"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg></span>note</div><div class="admonitionContent_BuS1"><p>Tailor these questions to match your organization&#x27;s technical landscape.</p></div></div>
+<p>To decide whether Temporal is a suitable solution for your use case, ask yourself 3 questions:</p>
+<ol>
+<li class=""><strong>Does your digital process have multiple steps that can fail independently?</strong></li>
+<li class=""><strong>Do you need the process to survive failures?</strong></li>
+<li class=""><strong>Does your process span multiple services, APIs, or long time periods (i.e. &gt;10 seconds)?</strong></li>
+</ol>
+<p>If you answered &quot;<strong>yes</strong>&quot; to 2 or more questions, Temporal is likely a good fit. Continue reading.</p>
+<p>If you answered &quot;<strong>no</strong>&quot; to all three questions, consider alternatives first. Skip to <a href="#bad-use-cases-for-temporal" class="">Bad use cases for Temporal</a> to explore alternative solutions.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="temporal-benefits">Temporal benefits<a href="#temporal-benefits" class="hash-link" aria-label="Direct link to Temporal benefits" title="Direct link to Temporal benefits" translate="no">​</a></h2>
+<div class="theme-admonition theme-admonition-note admonition_xJq3 alert alert--secondary"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg></span>note</div><div class="admonitionContent_BuS1"><p>Highlight benefits that address your developers&#x27; pain points.</p></div></div>
+<ol>
+<li class=""><strong>Durable Execution</strong> - your code will always complete.<!-- -->
+<ul>
+<li class="">Automatic retry, recovery from infrastructure failures, durable state persistence, and exactly-once execution semantics—all without custom code.</li>
+</ul>
+</li>
+<li class=""><strong>Developer velocity</strong> - ship faster with less code to maintain.<!-- -->
+<ul>
+<li class="">Write business logic in familiar languages, collaborate with developers across language barriers, eliminate boilerplate infrastructure code, and leverage built-in testing for rapid iteration.</li>
+</ul>
+</li>
+<li class=""><strong>Audit trail</strong> - complete visibility in your digital process.<!-- -->
+<ul>
+<li class="">Immutable execution history, self-documenting Workflow execution, and operational transparency.</li>
+</ul>
+</li>
+<li class=""><strong>Priority and Fairness</strong> - enterprise-grade multi-tenancy.<!-- -->
+<ul>
+<li class="">Priority-based execution, and fair distribution of Workflow Executions across your customer base or tenant.</li>
+</ul>
+</li>
+<li class=""><strong>Workflow fabric</strong> - break down development silo.<!-- -->
+<ul>
+<li class="">Cross-team Workflow orchestration with reusable operations, cross-namespace coordination, and service registry for discoverability.</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="good-use-cases-for-temporal">Good use cases for Temporal<a href="#good-use-cases-for-temporal" class="hash-link" aria-label="Direct link to Good use cases for Temporal" title="Direct link to Good use cases for Temporal" translate="no">​</a></h2>
+<div class="theme-admonition theme-admonition-note admonition_xJq3 alert alert--secondary"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg></span>note</div><div class="admonitionContent_BuS1"><p>Replace with use cases from your domain. See <a href="https://temporal.io/in-use" target="_blank" rel="noopener noreferrer" class="">Customer Stories</a> for inspiration.</p></div></div>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="business-transactions">Business transactions<a href="#business-transactions" class="hash-link" aria-label="Direct link to Business transactions" title="Direct link to Business transactions" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Payment processing</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Multi-party coordination with compensation logic, audit requirements, idempotency guarantees, timeout handling for authorizations that expire, and scalability to support more than billions of transactions per day.</li>
+</ul>
+</li>
+<li class=""><strong>Order management</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Long-running state machines spanning hours to days with complex state transitions, human intervention, parallel operations, different order priority, variable timing per order, and support for more than millions of orders per hour.</li>
+</ul>
+</li>
+<li class=""><strong>Mortgage underwriting</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Weeks-long processes with complex decision trees, multiple external integrations, human approvals, strict compliance requirements, and durable state persistence.</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="customer-experience">Customer experience<a href="#customer-experience" class="hash-link" aria-label="Direct link to Customer experience" title="Direct link to Customer experience" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Marketing campaign</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Multi-channel orchestration with time-based sequencing and long campaign durations with dynamic personalization.</li>
+</ul>
+</li>
+<li class=""><strong>Customer onboarding</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect:</strong> Great for long-running, multi-step, and sometimes human-in-the-loop processes that onboarding often requires.</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="data-engineering">Data engineering<a href="#data-engineering" class="hash-link" aria-label="Direct link to Data engineering" title="Direct link to Data engineering" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Document processing</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Multi-stage pipelines with variable processing times, external service dependencies, rate limit requirements, and coordinated large-scale processing.</li>
+</ul>
+</li>
+<li class=""><strong>Data pipeline</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Data orchestration with complex dependencies, incremental processing, backfill coordination, cross-system dependencies, SLA monitoring, and idempotent execution.</li>
+</ul>
+</li>
+<li class=""><strong>Video processing</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Long-running compute, resource-intensive GPU activities, complex pipelines with parallel variant generation, failure isolation, and cost-optimized scheduling.</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="aiml">AI/ML<a href="#aiml" class="hash-link" aria-label="Direct link to AI/ML" title="Direct link to AI/ML" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>ML inference</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Multi-model orchestration with fallback logic, batch and real-time handling, feature engineering, and comprehensive audit trail.</li>
+</ul>
+</li>
+<li class=""><strong>RAG</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Multi-step retrieval with hybrid search, context assembly from multiple sources, LLM orchestration with retries and fallbacks, and evaluation pipeline tracking.</li>
+</ul>
+</li>
+<li class=""><strong>AI agents</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Long-running autonomous execution with tool orchestration, planning and replanning, human-in-the-loop controls, durable memory management, and safety guardrails.</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="operational">Operational<a href="#operational" class="hash-link" aria-label="Direct link to Operational" title="Direct link to Operational" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Infrastructure management</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Multi-step provisioning with automatic rollback on failure, idempotent cloud operations, change management, and complete auditability.</li>
+</ul>
+</li>
+<li class=""><strong>CI/CD</strong>
+<ul>
+<li class=""><strong>Why Temporal is perfect</strong>: Complex pipeline stages with environment promotion gates, parallel test execution, conditional deployment strategies, automatic rollback monitoring, and approval gates.</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="bad-use-cases-for-temporal">Bad use cases for Temporal<a href="#bad-use-cases-for-temporal" class="hash-link" aria-label="Direct link to Bad use cases for Temporal" title="Direct link to Bad use cases for Temporal" translate="no">​</a></h2>
+<div class="theme-admonition theme-admonition-note admonition_xJq3 alert alert--secondary"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg></span>note</div><div class="admonitionContent_BuS1"><p>Add anti-patterns specific to your organization&#x27;s domain and technology stack.</p></div></div>
+<ol>
+<li class=""><strong>Simple Request-Response APIs</strong>
+<ul>
+<li class="">No failure recovery needed</li>
+<li class="">Better alternative: REST / gRPC server</li>
+</ul>
+</li>
+<li class=""><strong>Real-time stream processing</strong>
+<ul>
+<li class="">High throughput (&gt;1M events/sec)</li>
+<li class="">Ultra-low latency requirements (&lt;100ms)</li>
+<li class="">No durable state needed</li>
+<li class="">Better alternative: Flink, Amazon Kinesis, Google Cloud Dataflow</li>
+</ul>
+</li>
+<li class=""><strong>Database triggers &amp; stored procedures</strong>
+<ul>
+<li class="">Logic tightly coupled to database</li>
+<li class="">Needs transactional guarantees within single DB</li>
+<li class="">No external service calls</li>
+<li class="">Better alternative: database native features</li>
+</ul>
+</li>
+<li class=""><strong>Pure Compute Workloads</strong>
+<ul>
+<li class="">CPU/GPU intensive calculations</li>
+<li class="">No I/O or service calls</li>
+<li class="">No state management needed</li>
+<li class="">Better alternative: AWS Lambda, Spark, Ray</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="next-steps">Next steps<a href="#next-steps" class="hash-link" aria-label="Direct link to Next steps" title="Direct link to Next steps" translate="no">​</a></h2>
+<div class="theme-admonition theme-admonition-note admonition_xJq3 alert alert--secondary"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg></span>note</div><div class="admonitionContent_BuS1"><p>Add relevant links (i.e. support channel) for your developers to explore next.</p></div></div>
+<p>To learn more:</p>
+<ul>
+<li class=""><a class="" href="/getting-started">Run your first Temporal Workflow in under 30 minutes</a></li>
+<li class="">Schedule a discovery session with the Temporal platform team to validate your use case</li>
+<li class=""><a class="" href="/temporal-overview#temporal-use-cases-at-abc-financial">See how other teams are using Temporal today</a></li>
+</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/temporal-overview"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Temporal Overview</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/getting-started"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Getting Started</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#temporal-decision-framework" class="table-of-contents__link toc-highlight">Temporal decision framework</a></li><li><a href="#temporal-benefits" class="table-of-contents__link toc-highlight">Temporal benefits</a></li><li><a href="#good-use-cases-for-temporal" class="table-of-contents__link toc-highlight">Good use cases for Temporal</a><ul><li><a href="#business-transactions" class="table-of-contents__link toc-highlight">Business transactions</a></li><li><a href="#customer-experience" class="table-of-contents__link toc-highlight">Customer experience</a></li><li><a href="#data-engineering" class="table-of-contents__link toc-highlight">Data engineering</a></li><li><a href="#aiml" class="table-of-contents__link toc-highlight">AI/ML</a></li><li><a href="#operational" class="table-of-contents__link toc-highlight">Operational</a></li></ul></li><li><a href="#bad-use-cases-for-temporal" class="table-of-contents__link toc-highlight">Bad use cases for Temporal</a></li><li><a href="#next-steps" class="table-of-contents__link toc-highlight">Next steps</a></li></ul></div></div></div></div></main></div></div></div></div>
+</body>
+</html>
