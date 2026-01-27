@@ -8,7 +8,7 @@ toc_max_heading_level: 3
 ---
 
 :::info
-This page is part of the [Temporal Knowledge Hub](./intro.md).
+This page is part of the [Temporal Platform Hub](./intro.md).
 :::
 
 ## What is Temporal?

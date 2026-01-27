@@ -2,13 +2,13 @@
 slug: /
 sidebar_position: 1
 id: index
-title: Temporal Knowledge Hub
+title: Temporal Platform Hub
 sidebar_label: 🏠 Home
 description: A foundational template for organizations to create an internal knowledge base about the Temporal Platform, designed for customization by internal Temporal Platform teams.
 toc_max_heading_level: 3
 ---
 
-The Temporal Knowledge Hub is a foundational template for organizations to create an internal knowledge base about the Temporal Platform.
+The Temporal Platform Hub is a foundational template for organizations to create an internal knowledge base about the Temporal Platform.
 It is designed for customization by internal Temporal Platform teams to facilitate structured developer onboarding and continuous education.
 
 For illustration, the content currently uses a hypothetical organization, "ABC Financial."
