@@ -59,13 +59,13 @@ yarn start
 
 This starts a local dev server at `http://localhost:3000`. Changes are reflected live without restarting.
 
-### Build
+### Deploy
 
 ```bash
-yarn build
+USE_SSH=true GIT_USER=<USERNAME> yarn deploy
 ```
 
-Generates static content in the `build` directory for deployment to any static hosting service.
+Build and deploy the changes to GitHub Pages.
 
 ## License
 
