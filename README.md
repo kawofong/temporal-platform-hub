@@ -2,6 +2,8 @@
 
 A foundational template for Platform teams to create an internal Temporal knowledge base. Built with [Docusaurus](https://docusaurus.io/).
 
+**See it live:** [kawofong.github.io/temporal-platform-hub](https://kawofong.github.io/temporal-platform-hub/)
+
 ## Why this exists
 
 Platform teams adopting Temporal often face the same challenges:

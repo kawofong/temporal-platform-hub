@@ -32,6 +32,15 @@ They will consume the technical knowledge managed by the Temporal Platform teams
 - Streamline onboarding and support continuous professional development for engineering teams on the Temporal Platform.
 - Reduce the Temporal Platform team's support load by providing comprehensive self-service documentation and established best practices.
 
+## How to use this template
+
+1. **Use the template**: Clone the [Temporal Platform Hub GitHub repo](https://github.com/kawofong/temporal-platform-hub).
+   It provides the source content built with [Docusaurus](https://docusaurus.io/).
+2. **Assign ownership**: Designate a Platform team to customize the content and keep it current as your
+   Temporal practice evolves.
+3. **Iterate**: Track which pages developers visit most and which questions still come to the Platform
+   team. Use this data to continuously improve the documentation.
+
 ## Table of contents
 
 - [Temporal Overview](./temporal-overview.md) - Learn what Temporal is, why users love it, and how it delivers business value.
