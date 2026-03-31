@@ -93,7 +93,7 @@ code temporal-python-template
 # Requires `uv` to be installed in local machine.
 
 # 1. Install all uv dependencies.
-uv sync --dev.
+uv sync --dev
 
 # 2. Install pre-commit hooks.
 uv run poe pre-commit-install
@@ -111,6 +111,18 @@ uv run poe pre-commit-run
 # 3. Run Temporal dev server and verify UI is up via http://localhost:8233.
 temporal server start-dev
 ```
+
+## AI-assisted development
+
+Temporal provides [Skills and MCP Server](https://docs.temporal.io/with-ai) that gives Temporal expertise to your coding agents. These tools help your AI coding agent understand Workflow determinism rules, Activity patterns, retry policies, error handling, and other Temporal concepts.
+
+Available tools include:
+
+* **Temporal Developer Skill** — Gives your coding agent expert-level knowledge of Temporal's programming model. Supports [Claude Code](https://claude.ai/download), Codex, Cursor, and other compatible agents.
+* **Temporal Cloud Skill** — Helps your coding agent troubleshoot Temporal Cloud connectivity, authentication, and configuration issues.
+* **Temporal Docs MCP Server** — Provides your coding agent with real-time access to Temporal documentation.
+
+See [Develop with AI](https://docs.temporal.io/with-ai) for setup instructions.
 
 ## Run your first Workflow locally
 

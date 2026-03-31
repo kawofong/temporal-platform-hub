@@ -62,7 +62,7 @@ At ABC Financial, the ownership of Temporal applications is shared between the *
 | Responsibility | Platform Team | Application Team |
 | :---- | ----- | ----- |
 | Temporal Platform Hub | ✅ | ❌ |
-| [Temporal developer guide](#) | ✅ | ❌ |
+| Temporal developer guide | ✅ | ❌ |
 
 ### Development
 

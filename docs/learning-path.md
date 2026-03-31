@@ -66,4 +66,5 @@ The Advanced learning paths are tailored to 3 distinct user personas:
 
 ## What's next
 
+* Enhance your coding agent with [Temporal Skills and MCP tools](https://docs.temporal.io/with-ai) for expert-level Temporal guidance as you develop.
 * Check whether [Temporal is the right technology for your use case](./decision-framework.md).
