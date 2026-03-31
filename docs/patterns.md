@@ -135,6 +135,18 @@ Curate Temporal Workflow patterns relevant to your use cases so developers can q
 | **Why use it** | Drastically reduces end-user latency in interactive applications. Users receive immediate feedback (like an "Order Received" confirmation) without waiting for the entire process to complete. |
 | **Code samples** | [Java](https://github.com/temporalio/samples-java/tree/main/core/src/main/java/io/temporal/samples/earlyreturn) |
 
+## Standalone Activity
+
+:::warning[Pre-Release]
+Standalone Activity is in pre-release and not recommended for production use. See [Standalone Activity documentation](https://docs.temporal.io/standalone-activity) for the latest status.
+:::
+
+|  |  |
+| :---- | :---- |
+| **What it does** | Executes a top-level Activity directly from a Client, without wrapping it in a Workflow. |
+| **Why use it** | Reduces cost and latency for single-step, reliable jobs that need at-least-once execution with retries and timeouts but do not require Workflow orchestration. |
+| **Code samples** | [Python](https://docs.temporal.io/develop/python/standalone-activities) |
+
 ## Example Temporal Applications
 
 See [Temporal Code Exchange](https://temporal.io/code-exchange) for example Temporal applications.

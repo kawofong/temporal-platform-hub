@@ -57,6 +57,16 @@ Trigger `ContinueAsNew` periodically (e.g. every ~4,000 events or daily) for lon
 
 **Why**: This closes the current run, moving its Event History from Active Storage (expensive) to Retained Storage (cheap). This creates a ~97% reduction in storage costs for that history data.
 
+### Cost-saving tip #3: Use Standalone Activity for single-step jobs
+
+:::warning[Pre-Release]
+Standalone Activity is in pre-release and not recommended for production use. See [Standalone Activity documentation](https://docs.temporal.io/standalone-activity) for the latest status.
+:::
+
+Use a [Standalone Activity](https://docs.temporal.io/standalone-activity) instead of a Workflow when your use case is a single Activity that does not require Workflow orchestration.
+
+**Why**: Starting a Workflow to run a single Activity incurs billable Actions for both the Workflow Start and the Activity Start. A Standalone Activity eliminates the Workflow-level Actions, reducing cost and latency.
+
 ## What's next
 
 * [Temporal Cloud pricing](https://docs.temporal.io/cloud/pricing)
