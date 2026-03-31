@@ -147,6 +147,7 @@ Standalone Activity is in pre-release and not recommended for production use. Se
 | **Why use it** | Reduces cost and latency for single-step, reliable jobs that need at-least-once execution with retries and timeouts but do not require Workflow orchestration. |
 | **Code samples** | [Python](https://docs.temporal.io/develop/python/standalone-activities) |
 
-## Example Temporal Applications
+## Additional resources
 
-See [Temporal Code Exchange](https://temporal.io/code-exchange) for example Temporal applications.
+* [Temporal Design Patterns](https://taonic.github.io/temporal-design-patterns/) — A curated catalog of design patterns by a Temporal Solution Architect, covering Entity Workflow, Updatable Timer, Signal with Start, Approval, and more.
+* [Temporal Code Exchange](https://temporal.io/code-exchange) — Example Temporal applications across languages and use cases.
