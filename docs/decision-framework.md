@@ -41,7 +41,7 @@ Highlight benefits that address your developers' pain points.
    * Write business logic in familiar languages, collaborate with developers across language barriers, eliminate boilerplate infrastructure code, and leverage built-in testing for rapid iteration.
 3. **Audit trail** - complete visibility in your digital process.
    * Immutable execution history, self-documenting Workflow execution, and operational transparency.
-4. **Priority and Fairness** - enterprise-grade multi-tenancy.
+4. **[Priority and Fairness](https://docs.temporal.io/develop/task-queue-priority-fairness)** - enterprise-grade multi-tenancy.
    * Priority-based execution, and fair distribution of Workflow Executions across your customer base or tenant.
 5. **Workflow fabric** - break down development silo.
    * Cross-team Workflow orchestration with reusable operations, cross-namespace coordination, and service registry for discoverability.
@@ -92,6 +92,11 @@ Replace with use cases from your domain. See [Customer Stories](https://temporal
    * **Why Temporal is perfect**: Multi-step provisioning with automatic rollback on failure, idempotent cloud operations, change management, and complete auditability.
 2. **CI/CD**
    * **Why Temporal is perfect**: Complex pipeline stages with environment promotion gates, parallel test execution, conditional deployment strategies, automatic rollback monitoring, and approval gates.
+
+### Multi-tenant systems
+
+1. **Tenant-aware task processing**
+   * **Why Temporal is perfect**: [Task Queue Priority and Fairness](https://docs.temporal.io/develop/task-queue-priority-fairness) provides built-in controls to prevent high-volume tenants from starving smaller ones, all without the need to build custom scheduling logic.
 
 ## Bad use cases for Temporal
 

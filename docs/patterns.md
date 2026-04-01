@@ -119,6 +119,14 @@ Curate Temporal Workflow patterns relevant to your use cases so developers can q
 | **Why use it** | Targets tasks to specific hosts or environments; required for file-system affinity, local caching strategies, or hardware-specific (e.g., GPU) operations. |
 | **Code samples** | [Python](https://github.com/temporalio/samples-python/tree/main/worker_specific_task_queues), [Java](https://github.com/temporalio/samples-java/tree/main/core/src/main/java/io/temporal/samples/fileprocessing) |
 
+## Task Queue Priority and Fairness
+
+|  |  |
+| :---- | :---- |
+| **What it does** | Priority controls execution order within a Task Queue. Fairness controls the ratio of tasks dispatched to your Workers. |
+| **Why use it** | Separate low-priority and high-priority tasks on a shared Worker pool, ensure urgent tasks execute first, and prevent large tenants from starving smaller ones in multi-tenant systems. |
+| **Code samples** | [Task Queue Priority and Fairness](https://docs.temporal.io/develop/task-queue-priority-fairness) |
+
 ## Saga
 
 |  |  |
