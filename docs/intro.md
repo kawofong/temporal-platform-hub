@@ -34,7 +34,7 @@ They will consume the technical knowledge managed by the Temporal Platform teams
 
 ## How to use this template
 
-1. **Use the template**: Clone the [Temporal Platform Hub GitHub repo](https://github.com/kawofong/temporal-platform-hub).
+1. **Use the template**: Clone the [Temporal Platform Hub GitHub repo](https://github.com/temporalio/platform-hub).
    It provides the source content built with [Docusaurus](https://docusaurus.io/).
 2. **Assign ownership**: Designate a Platform team to customize the content and keep it current as your
    Temporal practice evolves.

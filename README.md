@@ -2,7 +2,7 @@
 
 A foundational template for Platform teams to create an internal Temporal knowledge base. Built with [Docusaurus](https://docusaurus.io/).
 
-**See it live:** [kawofong.github.io/temporal-platform-hub](https://kawofong.github.io/temporal-platform-hub/)
+**See it live:** [go.temporal.io/platform-hub](https://go.temporal.io/platform-hub)
 
 ## Why this exists
 
