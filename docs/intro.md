@@ -51,6 +51,7 @@ They will consume the technical knowledge managed by the Temporal Platform teams
 - [Cost](./cost.md) - Understanding Temporal Cloud's consumption-based pricing model.
 - [Shared Responsibility](./shared-responsibility.md) - Defining team responsibilities for building and managing Temporal applications.
 - [Patterns](./patterns.md) - Common Temporal Workflow design patterns with code samples.
+- [AI Engineering](./ai-engineering/index.md) - Reference architecture, patterns, and security guidance for AI and agentic workloads.
 - [Troubleshooting](./troubleshooting.md) - How to observe and troubleshoot Temporal Workflows and Workers.
 - [Support](./support.md) - Temporal Cloud support model and expert-led sessions.
 - [FAQs](./faqs.md) - Common questions and answers about using Temporal.

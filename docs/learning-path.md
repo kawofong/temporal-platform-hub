@@ -59,10 +59,20 @@ The Advanced learning paths are tailored to 3 distinct user personas:
 
 ### AI Developers {#ai-developers}
 
-1. [Building Durable AI Applications with Temporal](https://learn.temporal.io/tutorials/ai/building-durable-ai-applications/)
-   1. Learn how to build reliable AI applications using Temporal to orchestrate LLM calls, handle retries, and manage complex AI workflows that can recover from failures.
-2. [Building Durable MCP Tool with Temporal](https://learn.temporal.io/tutorials/ai/building-mcp-tools-with-temporal/)
-   1. Learn how to build long-running Model Context Protocol (MCP) tools using Temporal.
+The AI Developer track is structured differently from the Software Developer track. Rather than starting with Sagas and payment processing, AI engineers should start with the agent loop pattern and work backward to understand *why* Temporal's determinism rules matter for their workloads.
+
+1. **Start here**: [Building Durable AI Applications with Temporal](https://learn.temporal.io/tutorials/ai/building-durable-ai-applications/)
+   1. Build your first durable AI application. Understand how LLM calls map to Activities, why prompts must not live in Workflow code, and how Temporal's retry primitives differ from what LangChain or similar frameworks provide.
+2. **Core pattern**: [AI Engineering → Reference Architecture](./ai-engineering/reference-architecture.md)
+   1. Understand the orchestrator Workflow pattern, correct LLM retry strategy (respecting `Retry-After` headers), parallel tool dispatch with `asyncio.gather`, and the human-in-the-loop Signal/Update gate.
+3. **Production patterns**: [AI Engineering → AI Patterns](./ai-engineering/patterns.md)
+   1. Five patterns covering LLM Activities with structured retries, human-in-the-loop approval, prompt versioning and replay safety, parallel tool dispatch, and agent loops with `continue_as_new` for history pruning.
+4. **Long-running agents**: [Continue as New](https://docs.temporal.io/develop/python/continue-as-new)
+   1. Understand how `continue_as_new` prunes Workflow history for agents that run for hundreds of steps, and how to carry agent state across executions.
+5. **Security**: [AI Engineering → Security & Governance](./ai-engineering/security.md)
+   1. Payload encryption for LLM I/O, credential management for third-party AI APIs, namespace isolation for sensitive AI workloads, and audit trail requirements for model governance and the EU AI Act.
+6. **MCP tools**: [Building Durable MCP Tool with Temporal](https://learn.temporal.io/tutorials/ai/building-mcp-tools-with-temporal/)
+   1. Learn how to build long-running Model Context Protocol (MCP) tools backed by Temporal Activities, and how to run MCP tool calls under the identity of the requesting user.
 
 ## What's next
 
