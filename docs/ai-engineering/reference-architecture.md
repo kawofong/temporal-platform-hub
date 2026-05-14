@@ -52,11 +52,17 @@ Workflow code is replayed from history during failure recovery. If you call an L
 The Workflow is the durable brain of your agent. It holds the agent's message history, step count, and any pending decisions. It does not call the LLM or any external service directly — it schedules Activities to do that work and waits for their results.
 
 ```python
+import asyncio
 from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Optional
 from temporalio import workflow
 from temporalio.exceptions import ApplicationError
+
+# Activity modules must be imported with imports_passed_through to prevent
+# the Python Workflow sandbox from reloading them on every Workflow task.
+with workflow.unsafe.imports_passed_through():
+    from activities import call_llm, execute_tool
 
 @dataclass
 class AgentInput:
@@ -84,7 +90,7 @@ class AgentWorkflow:
             response = await workflow.execute_activity(
                 call_llm,
                 args=[state.system_prompt, state.messages],
-                schedule_to_close_timeout=timedelta(minutes=5),
+                start_to_close_timeout=timedelta(minutes=5),
             )
 
             state.messages.append({"role": "assistant", "content": response.content})
@@ -96,12 +102,11 @@ class AgentWorkflow:
 
             # Step 3: Execute the tool calls the LLM requested
             if response.tool_calls:
-                import asyncio
                 tool_results = await asyncio.gather(*[
                     workflow.execute_activity(
                         execute_tool,
                         args=[tc.name, tc.arguments],
-                        schedule_to_close_timeout=timedelta(minutes=2),
+                        start_to_close_timeout=timedelta(minutes=2),
                     )
                     for tc in response.tool_calls
                 ])
@@ -129,7 +134,7 @@ The default exponential backoff retry policy is **not appropriate for LLM API ca
 Structure your LLM Activity to handle each error class explicitly:
 
 ```python
-import asyncio
+from datetime import timedelta
 from temporalio import activity
 from temporalio.exceptions import ApplicationError
 
@@ -137,37 +142,37 @@ from temporalio.exceptions import ApplicationError
 async def call_llm(system_prompt: str, messages: list[dict]) -> LLMResponse:
     from openai import AsyncOpenAI, RateLimitError, BadRequestError
 
-    client = AsyncOpenAI()
+    # Disable client-level retries — let Temporal own all retry logic
+    client = AsyncOpenAI(max_retries=0)
 
-    # Inner retry loop for rate limits — handles Retry-After header directly
-    for attempt in range(5):
-        try:
-            activity.heartbeat(f"LLM call attempt {attempt + 1}")
-            completion = await client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "system", "content": system_prompt}] + messages,
-            )
-            return parse_llm_response(completion)
+    try:
+        activity.heartbeat("Calling LLM...")
+        completion = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "system", "content": system_prompt}] + messages,
+        )
+        return parse_llm_response(completion)
 
-        except RateLimitError as e:
-            # Respect the Retry-After header if present
-            retry_after = int(e.response.headers.get("retry-after", 10))
-            activity.heartbeat(f"Rate limited — waiting {retry_after}s")
-            await asyncio.sleep(retry_after)
-            continue
+    except RateLimitError as e:
+        # Pass the Retry-After value to Temporal as next_retry_delay.
+        # Temporal releases the worker slot during the delay — never sleep in an Activity.
+        retry_after_secs = int(e.response.headers.get("retry-after", 10))
+        raise ApplicationError(
+            f"Rate limited — retrying in {retry_after_secs}s",
+            type="RateLimitError",
+            next_retry_delay=timedelta(seconds=retry_after_secs),
+        )
 
-        except BadRequestError as e:
-            # Content policy, invalid request — do not retry
-            raise ApplicationError(
-                str(e),
-                type="ContentPolicyError",
-                non_retryable=True,
-            )
-
-    raise ApplicationError("LLM rate limit retries exhausted", non_retryable=False)
+    except BadRequestError as e:
+        # Content policy, invalid request — do not retry
+        raise ApplicationError(
+            str(e),
+            type="ContentPolicyError",
+            non_retryable=True,
+        )
 ```
 
-Configure the Activity's Temporal retry policy to cover transient server errors (500/503), while relying on the in-Activity loop for rate limits:
+Configure the Activity's Temporal retry policy to handle all retries. Rate limit errors surface with the correct `next_retry_delay` (from the `Retry-After` header); server errors use the configured exponential backoff:
 
 ```python
 from temporalio.common import RetryPolicy
@@ -175,15 +180,15 @@ from temporalio.common import RetryPolicy
 llm_retry_policy = RetryPolicy(
     initial_interval=timedelta(seconds=2),
     backoff_coefficient=2.0,
-    maximum_interval=timedelta(minutes=1),
-    maximum_attempts=3,
+    maximum_interval=timedelta(minutes=2),
+    maximum_attempts=10,
     non_retryable_error_types=["ContentPolicyError"],
 )
 
 response = await workflow.execute_activity(
     call_llm,
     args=[system_prompt, messages],
-    schedule_to_close_timeout=timedelta(minutes=10),
+    start_to_close_timeout=timedelta(minutes=5),
     retry_policy=llm_retry_policy,
 )
 ```
@@ -197,7 +202,8 @@ For streaming LLM responses (e.g., when using `stream=True`), use `activity.hear
 async def call_llm_streaming(system_prompt: str, messages: list[dict]) -> str:
     from openai import AsyncOpenAI
 
-    client = AsyncOpenAI()
+    # Disable client-level retries — let Temporal handle retries
+    client = AsyncOpenAI(max_retries=0)
     chunks = []
 
     async with client.chat.completions.stream(
@@ -207,8 +213,9 @@ async def call_llm_streaming(system_prompt: str, messages: list[dict]) -> str:
         async for chunk in stream:
             delta = chunk.choices[0].delta.content or ""
             chunks.append(delta)
-            # Heartbeat every chunk so Temporal knows we're alive
-            activity.heartbeat(f"Streamed {len(chunks)} chunks")
+            # Batch heartbeats — each heartbeat is a Temporal Action (counts toward cost)
+            if len(chunks) % 10 == 0:
+                activity.heartbeat(f"Streamed {len(chunks)} chunks")
 
     return "".join(chunks)
 ```
@@ -219,8 +226,8 @@ Set `heartbeat_timeout` in the Workflow to control how long Temporal waits betwe
 response = await workflow.execute_activity(
     call_llm_streaming,
     args=[system_prompt, messages],
-    schedule_to_close_timeout=timedelta(minutes=10),
-    heartbeat_timeout=timedelta(seconds=30),  # Fail if no heartbeat for 30s
+    start_to_close_timeout=timedelta(minutes=10),
+    heartbeat_timeout=timedelta(seconds=30),  # Fail if silent for 30s
 )
 ```
 
@@ -253,14 +260,14 @@ class AgentWorkflow:
 
         proposed_action = await workflow.execute_activity(
             plan_action, input.task,
-            schedule_to_close_timeout=timedelta(minutes=2),
+            start_to_close_timeout=timedelta(minutes=2),
         )
 
         # Notify reviewers (via activity that sends Slack/email)
         await workflow.execute_activity(
             notify_reviewers,
             args=[proposed_action, workflow.info().workflow_id],
-            schedule_to_close_timeout=timedelta(minutes=1),
+            start_to_close_timeout=timedelta(minutes=1),
         )
 
         # Wait up to 24 hours for a human to signal approval
@@ -277,7 +284,7 @@ class AgentWorkflow:
         # Execute the approved action
         return await workflow.execute_activity(
             execute_action, proposed_action,
-            schedule_to_close_timeout=timedelta(minutes=5),
+            start_to_close_timeout=timedelta(minutes=5),
         )
 ```
 

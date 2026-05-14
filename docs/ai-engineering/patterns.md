@@ -21,11 +21,10 @@ For additional examples, see the [Temporal AI Cookbook](https://docs.temporal.io
 
 |  |  |
 | :---- | :---- |
-| **What it does** | Wraps an LLM API call in a Temporal Activity with error-class-aware retry behavior: inner loop for rate limits (respecting `Retry-After`), non-retryable errors for content policy violations, and heartbeats for streaming responses. |
+| **What it does** | Wraps an LLM API call in a Temporal Activity with error-class-aware retry behavior: `next_retry_delay` for rate limits (respecting `Retry-After`), non-retryable errors for content policy violations, and `max_retries=0` on the LLM client so Temporal owns all retry logic. |
 | **Why use it** | Default exponential backoff is wrong for LLM APIs. Rate limit errors (HTTP 429) include a `Retry-After` header that tells you exactly how long to wait. Content policy errors (HTTP 400) will never succeed on retry — retrying them wastes quota and delays surfacing the failure. Wrapping the LLM call in an Activity makes each call durable and observable in the Workflow history. |
 
 ```python
-import asyncio
 from datetime import timedelta
 from temporalio import activity, workflow
 from temporalio.common import RetryPolicy
@@ -35,45 +34,44 @@ from temporalio.exceptions import ApplicationError
 async def call_llm(system_prompt: str, messages: list[dict]) -> str:
     from openai import AsyncOpenAI, RateLimitError, BadRequestError
 
-    client = AsyncOpenAI()
+    # Disable client-level retries — let Temporal own all retry logic
+    client = AsyncOpenAI(max_retries=0)
 
-    for attempt in range(5):
-        try:
-            activity.heartbeat(f"LLM call attempt {attempt + 1}")
-            completion = await client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "system", "content": system_prompt}] + messages,
-            )
-            return completion.choices[0].message.content
+    try:
+        activity.heartbeat("Calling LLM...")
+        completion = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "system", "content": system_prompt}] + messages,
+        )
+        return completion.choices[0].message.content
 
-        except RateLimitError as e:
-            # Read the Retry-After header rather than guessing a backoff interval
-            retry_after = int(e.response.headers.get("retry-after", 10))
-            activity.heartbeat(f"Rate limited — waiting {retry_after}s before retry")
-            await asyncio.sleep(retry_after)
-            continue
+    except RateLimitError as e:
+        # Pass the Retry-After value to Temporal as next_retry_delay.
+        # Temporal releases the worker slot during the delay — never sleep in an Activity.
+        retry_after_secs = int(e.response.headers.get("retry-after", 10))
+        raise ApplicationError(
+            f"Rate limited — retrying in {retry_after_secs}s",
+            type="RateLimitError",
+            next_retry_delay=timedelta(seconds=retry_after_secs),
+        )
 
-        except BadRequestError as e:
-            # Content policy / invalid request — retrying won't help
-            raise ApplicationError(
-                str(e), type="ContentPolicyError", non_retryable=True
-            )
-
-    raise ApplicationError("LLM rate limit retries exhausted", non_retryable=False)
+    except BadRequestError as e:
+        # Content policy / invalid request — retrying won't help
+        raise ApplicationError(
+            str(e), type="ContentPolicyError", non_retryable=True
+        )
 
 
-# In your Workflow — configure Temporal-level retries for server errors (5xx)
-# while the inner loop above handles rate limits (429)
+# In your Workflow — all retries (rate limits and server errors) are handled by Temporal
 result = await workflow.execute_activity(
     call_llm,
     args=[system_prompt, messages],
-    schedule_to_close_timeout=timedelta(minutes=10),
-    heartbeat_timeout=timedelta(seconds=30),
+    start_to_close_timeout=timedelta(minutes=5),
     retry_policy=RetryPolicy(
         initial_interval=timedelta(seconds=2),
         backoff_coefficient=2.0,
-        maximum_interval=timedelta(minutes=1),
-        maximum_attempts=3,
+        maximum_interval=timedelta(minutes=2),
+        maximum_attempts=10,
         non_retryable_error_types=["ContentPolicyError"],
     ),
 )
@@ -116,14 +114,14 @@ class AgentWorkflow:
         proposed_action = await workflow.execute_activity(
             plan_action,
             task,
-            schedule_to_close_timeout=timedelta(minutes=2),
+            start_to_close_timeout=timedelta(minutes=2),
         )
 
         # Notify reviewers with the Workflow ID so they can send the signal back
         await workflow.execute_activity(
             notify_reviewers,
             args=[proposed_action, workflow.info().workflow_id],
-            schedule_to_close_timeout=timedelta(minutes=1),
+            start_to_close_timeout=timedelta(minutes=1),
         )
 
         # Wait up to 24 hours; returns False if the timeout expires first
@@ -141,7 +139,7 @@ class AgentWorkflow:
         return await workflow.execute_activity(
             execute_action,
             proposed_action,
-            schedule_to_close_timeout=timedelta(minutes=5),
+            start_to_close_timeout=timedelta(minutes=5),
         )
 ```
 
@@ -159,6 +157,7 @@ Use [Workflow Update](https://docs.temporal.io/develop/python/message-passing#up
 | **Why use it** | Temporal replays Workflow code from history during failure recovery. Any non-deterministic call inside a Workflow — including an LLM call — will produce a different result on replay and cause a non-determinism error. Placing prompts and LLM calls in Activities means the result is recorded once in history and replayed from there. This also makes prompt changes safe: deploying a new prompt version in an Activity does not affect in-flight Workflows — only new executions pick up the change. |
 
 ```python
+from datetime import timedelta
 from temporalio import activity, workflow
 
 # ❌ Wrong: LLM call directly in the Workflow breaks determinism and replay
@@ -185,7 +184,8 @@ If you are unsure, say so — do not speculate.
 @activity.defn
 async def call_llm_with_prompt(task: str, context: str) -> str:
     import openai
-    client = openai.AsyncOpenAI()
+    # Disable client-level retries — let Temporal own all retry logic
+    client = openai.AsyncOpenAI(max_retries=0)
     response = await client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -196,20 +196,24 @@ async def call_llm_with_prompt(task: str, context: str) -> str:
     return response.choices[0].message.content
 
 
+# In a real project, activities live in a separate file (e.g., activities.py).
+# Import them with imports_passed_through to avoid sandbox reloads on every Workflow task:
+with workflow.unsafe.imports_passed_through():
+    from activities import retrieve_context, call_llm_with_prompt
+
 @workflow.defn
 class GoodAgentWorkflow:
     @workflow.run
     async def run(self, task: str) -> str:
-        from datetime import timedelta
         context = await workflow.execute_activity(
             retrieve_context, task,
-            schedule_to_close_timeout=timedelta(minutes=1),
+            start_to_close_timeout=timedelta(minutes=1),
         )
         # The prompt lives in the Activity — safe for replay, safe to version
         return await workflow.execute_activity(
             call_llm_with_prompt,
             args=[task, context],
-            schedule_to_close_timeout=timedelta(minutes=5),
+            start_to_close_timeout=timedelta(minutes=5),
         )
 ```
 
@@ -227,6 +231,9 @@ import asyncio
 from datetime import timedelta
 from temporalio import workflow
 
+with workflow.unsafe.imports_passed_through():
+    from activities import call_llm, execute_tool
+
 @workflow.defn
 class AgentWorkflow:
     @workflow.run
@@ -237,7 +244,7 @@ class AgentWorkflow:
         llm_response = await workflow.execute_activity(
             call_llm,
             args=[SYSTEM_PROMPT, messages],
-            schedule_to_close_timeout=timedelta(minutes=5),
+            start_to_close_timeout=timedelta(minutes=5),
         )
 
         # Step 2: Dispatch all tool calls concurrently
@@ -246,7 +253,7 @@ class AgentWorkflow:
             workflow.execute_activity(
                 execute_tool,
                 args=[tool_call.name, tool_call.arguments],
-                schedule_to_close_timeout=timedelta(minutes=2),
+                start_to_close_timeout=timedelta(minutes=2),
             )
             for tool_call in llm_response.tool_calls
         ])
@@ -265,12 +272,14 @@ class AgentWorkflow:
         return await workflow.execute_activity(
             call_llm,
             args=[SYSTEM_PROMPT, messages],
-            schedule_to_close_timeout=timedelta(minutes=5),
+            start_to_close_timeout=timedelta(minutes=5),
         )
 ```
 
 :::note
 `asyncio.gather` is safe inside Temporal Workflows. The Temporal Python SDK is built on `asyncio` and handles concurrent Activity dispatch correctly. Each call to `workflow.execute_activity` returns a coroutine that Temporal schedules as a separate Activity Task.
+
+To handle partial failures gracefully (so one failing tool doesn't cancel the others), use `asyncio.gather(*tasks, return_exceptions=True)` and filter exceptions from the results before building the next LLM message.
 :::
 
 ---
@@ -283,10 +292,14 @@ class AgentWorkflow:
 | **Why use it** | Temporal Workflow histories have a [size limit](https://docs.temporal.io/cloud/limits#workflow-execution-event-history-limits). An agent that runs for hundreds of steps accumulates a large history (each Activity input and output is an event). Without `continue_as_new`, the Workflow will eventually hit the limit and fail. `continue_as_new` prunes the history while preserving the agent's logical state (messages, step count), enabling agents that run for days or thousands of steps. |
 
 ```python
+import asyncio
 from dataclasses import dataclass, field
 from datetime import timedelta
 from temporalio import workflow
 from temporalio.exceptions import ApplicationError
+
+with workflow.unsafe.imports_passed_through():
+    from activities import call_llm, execute_tool
 
 @dataclass
 class AgentState:
@@ -313,7 +326,7 @@ class LongRunningAgentWorkflow:
             llm_response = await workflow.execute_activity(
                 call_llm,
                 args=[SYSTEM_PROMPT, state.messages],
-                schedule_to_close_timeout=timedelta(minutes=5),
+                start_to_close_timeout=timedelta(minutes=5),
             )
 
             state.messages.append({"role": "assistant", "content": llm_response.content})
@@ -323,12 +336,11 @@ class LongRunningAgentWorkflow:
                 return llm_response.content
 
             if llm_response.tool_calls:
-                import asyncio
                 tool_results = await asyncio.gather(*[
                     workflow.execute_activity(
                         execute_tool,
                         args=[tc.name, tc.arguments],
-                        schedule_to_close_timeout=timedelta(minutes=2),
+                        start_to_close_timeout=timedelta(minutes=2),
                     )
                     for tc in llm_response.tool_calls
                 ])
