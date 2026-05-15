@@ -17,6 +17,33 @@ Add, remove, or edit prompt cards to reflect the patterns your organization find
 
 A curated collection of prompts for use with AI coding tools (Claude, Copilot, Cursor, etc.) when working with Temporal. Organized by workflow stage — pick a card to see the full prompt and guidance.
 
+## Learn
+
+Use these prompts to understand how Temporal works, explore core concepts, and visualize workflow execution.
+
+<div class="prompt-grid-single-row">
+  <a class="prompt-card" href="./learning/explain-temporal-concepts">
+    <span class="prompt-card-icon">📚</span>
+    <p class="prompt-card-title">Explain Temporal Concepts</p>
+    <p class="prompt-card-desc">Get plain-language explanations of Temporal's core concepts tailored to your background.</p>
+  </a>
+  <a class="prompt-card" href="./learning/visualize-workflow">
+    <span class="prompt-card-icon">🗺️</span>
+    <p class="prompt-card-title">Visualize a Workflow</p>
+    <p class="prompt-card-desc">Generate a sequence diagram or flowchart of a workflow from code or a description.</p>
+  </a>
+  <a class="prompt-card" href="./learning/compare-to-alternatives">
+    <span class="prompt-card-icon">⚖️</span>
+    <p class="prompt-card-title">Compare to Alternatives</p>
+    <p class="prompt-card-desc">Understand how Temporal compares to queues, cron jobs, or other orchestration tools.</p>
+  </a>
+  <a class="prompt-card" href="./learning/explain-workflow-history">
+    <span class="prompt-card-icon">🧠</span>
+    <p class="prompt-card-title">Explain Workflow History</p>
+    <p class="prompt-card-desc">Demystify the event sourcing model and how Temporal replays workflow executions.</p>
+  </a>
+</div>
+
 ## Building
 
 Use these prompts when designing and implementing new Temporal workflows and activities.
