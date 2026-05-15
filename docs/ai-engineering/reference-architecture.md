@@ -195,7 +195,7 @@ response = await workflow.execute_activity(
 
 ## Heartbeat for streaming responses
 
-For streaming LLM responses (e.g., when using `stream=True`), use `activity.heartbeat()` to prevent the Activity from timing out while the stream is in progress. This also allows the Activity to be cancelled cleanly mid-stream if the Workflow is cancelled.
+For streaming LLM responses (e.g., when using `stream=True` as in this [example](https://github.com/dallastexas92/temporal-redis-pubsub)), use `activity.heartbeat()` to prevent the Activity from timing out while the stream is in progress. This also allows the Activity to be cancelled cleanly mid-stream if the Workflow is cancelled.
 
 ```python
 @activity.defn
@@ -232,6 +232,10 @@ response = await workflow.execute_activity(
 ```
 
 ## Human-in-the-loop gate
+
+Temporal supports multiple distinct human-in-the-loop patterns, including both a **one-shot approval gate** (block until a reviewer signals yes/no) and a **multi-turn interactive loop** (block indefinitely waiting for messages from a user). Both use Workflow Signals and Updates and Durable waits. Which you reach for depends on whether a human is actively in a conversation or asynchronously reviewing a proposed action.
+
+### One-shot approval gate
 
 Some agent actions require human approval before execution — for example, sending an email, executing a trade, or deleting records. Implement this as a Signal-based pause with a timeout fallback:
 
@@ -291,6 +295,124 @@ class AgentWorkflow:
 :::tip
 For lower-latency interactive use cases (e.g., a chatbot where the user is actively waiting), use [Workflow Update](https://docs.temporal.io/develop/python/message-passing#updates) instead of a Signal. Updates can return a value synchronously to the caller, making them better suited for request-response patterns.
 :::
+
+### Multi-turn chat via Signals
+
+For conversational agents — where a user sends messages, the agent responds, proposes a tool call, waits for the user to confirm, and then continues — the [temporal-ai-agent](https://github.com/temporal-community/temporal-ai-agent/blob/main/workflows/agent_goal_workflow.py) reference implementation uses three signals and a central `workflow.wait_condition` loop:
+
+| Signal | Purpose |
+|---|---|
+| `user_prompt(prompt)` | User sends a chat message; appended to a queue for ordered processing |
+| `confirm()` | User approves a proposed tool action; sets a boolean the loop checks |
+| `end_chat()` | User ends the session; sets a flag that causes the loop to return |
+
+The Workflow blocks in a `while True` loop waiting for any of these signals, then branches on which flag changed:
+
+```python
+from collections import deque
+from datetime import timedelta
+from typing import Deque, List, Optional
+from temporalio import workflow
+
+with workflow.unsafe.imports_passed_through():
+    from activities import call_llm, execute_tool
+
+@workflow.defn
+class AgentGoalWorkflow:
+    def __init__(self) -> None:
+        self.prompt_queue: Deque[str] = deque()
+        self.confirmed: bool = False
+        self.chat_ended: bool = False
+        self.conversation_history: List[dict] = []
+        self._pending_tool: Optional[str] = None
+        self._pending_args: dict = {}
+
+    # ── Signals ──────────────────────────────────────────────────────────────
+
+    @workflow.signal
+    async def user_prompt(self, prompt: str) -> None:
+        """Receive a user message. Appended to a queue so messages are
+        processed in order even if multiple signals arrive back-to-back."""
+        if not self.chat_ended:
+            self.prompt_queue.append(prompt)
+
+    @workflow.signal
+    async def confirm(self) -> None:
+        """User approves the proposed tool action."""
+        self.confirmed = True
+
+    @workflow.signal
+    async def end_chat(self) -> None:
+        """Cleanly terminates the agent loop."""
+        self.chat_ended = True
+
+    # ── Queries ───────────────────────────────────────────────────────────────
+
+    @workflow.query
+    def get_conversation_history(self) -> List[dict]:
+        """UI polls this to render the chat thread without modifying state."""
+        return self.conversation_history
+
+    # ── Main loop ─────────────────────────────────────────────────────────────
+
+    @workflow.run
+    async def run(self, input: AgentInput) -> str:
+        waiting_for_confirm = False
+
+        while True:
+            # Block until any signal arrives — no polling, no busy-waiting.
+            # The Workflow sleeps durably; no worker thread is consumed.
+            await workflow.wait_condition(
+                lambda: bool(self.prompt_queue)
+                        or self.chat_ended
+                        or self.confirmed
+            )
+
+            # Branch 1: end_chat signal received
+            if self.chat_ended:
+                return str(self.conversation_history)
+
+            # Branch 2: confirm signal received — execute the pending tool
+            if self.confirmed and waiting_for_confirm and self._pending_tool:
+                self.confirmed = False
+                waiting_for_confirm = False
+                tool_result = await workflow.execute_activity(
+                    execute_tool,
+                    args=[self._pending_tool, self._pending_args],
+                    start_to_close_timeout=timedelta(minutes=2),
+                )
+                self.conversation_history.append(
+                    {"actor": "tool", "response": tool_result}
+                )
+                self._pending_tool = None
+                continue
+
+            # Branch 3: new user message — call LLM, decide next step
+            if self.prompt_queue:
+                prompt = self.prompt_queue.popleft()
+                self.conversation_history.append({"actor": "user", "response": prompt})
+
+                tool_data = await workflow.execute_activity(
+                    call_llm,
+                    args=[prompt, self.conversation_history],
+                    start_to_close_timeout=timedelta(minutes=5),
+                )
+                self.conversation_history.append({"actor": "agent", "response": tool_data})
+
+                if tool_data.get("next") == "confirm":
+                    # LLM wants to call a tool — surface it to the user for approval
+                    self._pending_tool = tool_data["tool"]
+                    self._pending_args = tool_data.get("args", {})
+                    waiting_for_confirm = True
+```
+
+Key points from the [temporal-ai-agent implementation](https://github.com/temporal-community/temporal-ai-agent/blob/main/workflows/agent_goal_workflow.py):
+
+- **Queue over direct execution**: `user_prompt` appends to `prompt_queue` instead of triggering computation immediately, so back-to-back signals are always processed in order.
+- **Zero-cost blocking**: `workflow.wait_condition` with no timeout blocks durably — the Workflow persists its state in Temporal without consuming a worker thread while waiting for the next message.
+- **Three-way branch**: The loop's single `wait_condition` condition covers all three signals; the `if/elif` chain inside determines what happened. This avoids nested `wait_condition` calls that are harder to reason about.
+- **Queries never block**: `get_conversation_history` is a `@workflow.query` — the UI can call it at any time to render the current chat thread without interrupting the running loop.
+- **Continue-as-new on long conversations**: after `MAX_TURNS_BEFORE_CONTINUE` iterations the workflow calls `continue_as_new`, passing the conversation summary and prompt queue, so event history never grows unbounded.
 
 ## Tool call mapping
 
