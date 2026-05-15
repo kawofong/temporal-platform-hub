@@ -44,7 +44,7 @@ Use these prompts to understand how Temporal works, explore core concepts, and v
   </a>
 </div>
 
-## Building
+## Build
 
 Use these prompts when designing and implementing new Temporal workflows and activities.
 
@@ -91,7 +91,7 @@ Use these prompts when designing and implementing new Temporal workflows and act
   </a>
 </div>
 
-## Maintaining
+## Maintain
 
 Use these prompts when operating, updating, or optimizing workflows already running in production.
 
@@ -138,7 +138,7 @@ Use these prompts when operating, updating, or optimizing workflows already runn
   </a>
 </div>
 
-## Testing
+## Test
 
 Use these prompts when writing, improving, or running tests for Temporal workflows and activities.
 
