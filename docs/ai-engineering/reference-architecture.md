@@ -99,6 +99,18 @@ class AgentWorkflow:
         self._reply = None
         return reply
 
+    @send_message.validator
+    def validate_send_message(self, user_message: str) -> None:
+        """Reject invalid messages before they are accepted into event history.
+
+        Validators run synchronously before the Update is recorded — rejected
+        Updates cost no history events and return an error to the caller immediately.
+        """
+        if not user_message or not user_message.strip():
+            raise ValueError("user_message must not be empty")
+        if self._done:
+            raise ValueError("cannot send a message to a session that has ended")
+
     # ── Signal: end the session ───────────────────────────────────────────────
 
     @workflow.signal
@@ -174,7 +186,7 @@ class AgentWorkflow:
 handle = await client.start_workflow(
     AgentWorkflow.run,
     AgentInput(system_prompt="You are a helpful assistant."),
-    id="agent-session-123",
+    id=f"agent-{user_id}-{session_id}",  # meaningful per-session identifier — also acts as a uniqueness key
     task_queue="ai-agents-prd",
 )
 
@@ -188,6 +200,12 @@ print(reply)
 # End the session when the user is done
 await handle.signal(AgentWorkflow.end_session)
 ```
+
+:::note
+**Payload size**: message histories passed as Activity arguments grow with every turn. Temporal has a **2 MB payload limit** per argument. In long sessions, trim `self._messages` to a rolling context window (e.g., the last 20 messages) before passing it to `call_llm`. The full history is preserved in the Workflow event record — only the active context window needs to be trimmed.
+
+**Long sessions and continue-as-new**: this Workflow has no hard cap on total turns and no `continue_as_new`. For sessions with hundreds of turns the event history will grow unbounded. Add CAN at a `MAX_TURNS_BEFORE_CONTINUE` threshold — see the [Agent loop with continue-as-new](./patterns.md#agent-loop-with-continue-as-new) pattern for the recipe, including the `is_continue_as_new_suggested()` API.
+:::
 
 ## LLM retry strategy
 
@@ -509,6 +527,7 @@ Key points from the [temporal-ai-agent implementation](https://github.com/tempor
 - **Update for proposal responses**: `respond_to_action` is a `@workflow.update` — after the agent proposes a tool call the client can call it to approve or reject and receive a synchronous acknowledgment. The bare `confirm` Signal is retained for simple cases that don't need a return value.
 - **Queries never block**: `get_conversation_history` is a `@workflow.query` — the UI can call it at any time to render the current chat thread without interrupting the running loop.
 - **Continue-as-new on long conversations**: after `MAX_TURNS_BEFORE_CONTINUE` iterations the workflow calls `continue_as_new`, passing the conversation summary and prompt queue, so event history never grows unbounded.
+- **Signal rate limit**: a single Workflow Execution can sustain roughly ≤5 Signals/second. In a real-time chat this limit is never reached. If you are fanning `user_prompt` Signals programmatically (e.g., from a message queue consumer), stay under this threshold or batch messages into a single Signal payload.
 
 ## Tool call mapping
 

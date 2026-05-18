@@ -153,9 +153,12 @@ class PlatformAgentWorkflow:
 
         while state.step < inp.max_steps:
 
-            # Prune history periodically by continuing as new.
-            # The new execution receives the current state and resumes seamlessly.
-            if state.step > 0 and state.step % STEPS_PER_EXECUTION == 0:
+            # is_continue_as_new_suggested() returns True when event history approaches
+            # the server-side warn threshold (~10k events / 10 MB). The step counter
+            # acts as a belt-and-suspenders guard if the SDK signal hasn't fired yet.
+            if workflow.info().is_continue_as_new_suggested or (
+                state.step > 0 and state.step % STEPS_PER_EXECUTION == 0
+            ):
                 workflow.continue_as_new(state)
 
             # ── Step 1: Ask the LLM what to do next ──────────────────────────
@@ -313,6 +316,10 @@ async def main():
 ```
 
 Teams set `task_queue` on each `ToolDefinition` to match the queue their Worker is listening on. The Workflow dispatches each tool call to the right Worker automatically.
+
+:::warning
+Every `task_queue` value declared in a `ToolDefinition` must have at least one running Worker registered with that Activity function. If no Worker is listening on the declared task queue, the Activity Task queues indefinitely and eventually hits its `start_to_close_timeout`. Verify that each team's Worker is healthy before starting agent executions that reference their tools.
+:::
 
 ---
 

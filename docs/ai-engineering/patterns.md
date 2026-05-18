@@ -280,6 +280,8 @@ class AgentWorkflow:
 `asyncio.gather` is safe inside Temporal Workflows. The Temporal Python SDK is built on `asyncio` and handles concurrent Activity dispatch correctly. Each call to `workflow.execute_activity` returns a coroutine that Temporal schedules as a separate Activity Task.
 
 To handle partial failures gracefully (so one failing tool doesn't cancel the others), use `asyncio.gather(*tasks, return_exceptions=True)` and filter exceptions from the results before building the next LLM message.
+
+**Tool Activity idempotency**: Temporal Activities have at-least-once execution semantics — an Activity that fails mid-execution may run again on retry. Make write-side tool Activities idempotent: use an idempotency key (e.g., the Workflow ID + step counter) for operations like sending emails, executing trades, or modifying records. Read-side tools (search, lookup) are naturally idempotent.
 :::
 
 ---
@@ -308,7 +310,7 @@ class AgentState:
     step: int = 0
     final_answer: str | None = None
 
-# How many steps to run before pruning history with continue_as_new.
+# Hard-coded step guard — belt-and-suspenders alongside the SDK-provided signal below.
 # Keep this well below the Temporal history limit.
 STEPS_PER_EXECUTION = 100
 
@@ -317,8 +319,13 @@ class LongRunningAgentWorkflow:
     @workflow.run
     async def run(self, state: AgentState) -> str | None:
         while True:
-            # Prune history periodically by continuing as new
-            if state.step > 0 and state.step % STEPS_PER_EXECUTION == 0:
+            # Prefer the SDK signal over the step counter: is_continue_as_new_suggested()
+            # returns True when event history approaches the server-side warn threshold
+            # (~10k events / 10 MB). The step counter fires first on shorter agents and
+            # acts as a belt-and-suspenders guard if the SDK signal hasn't fired yet.
+            if workflow.info().is_continue_as_new_suggested or (
+                state.step > 0 and state.step % STEPS_PER_EXECUTION == 0
+            ):
                 # Pass the current agent state to the next execution.
                 # The new execution starts fresh history but picks up from state.step.
                 workflow.continue_as_new(state)
@@ -354,6 +361,8 @@ class LongRunningAgentWorkflow:
 
 :::tip
 When passing `state.messages` across `continue_as_new` calls, trim the message history to a fixed window (e.g., last 20 messages) to keep the Workflow input size manageable. The full unabridged history remains in the earlier Workflow execution records if needed for audit purposes.
+
+The same trimming applies **within** a single execution: `state.messages` is passed as an Activity argument on every `call_llm` invocation. Temporal has a **2 MB payload limit** per argument — a long conversation can approach this limit before `continue_as_new` fires. Trim the active context window before each LLM call; the full history is always recoverable from prior execution records.
 :::
 
 ---
