@@ -49,11 +49,15 @@ Workflow code is replayed from history during failure recovery. If you call an L
 
 ## The Orchestrator Workflow
 
-The Workflow is the durable brain of your agent. It holds the agent's message history, step count, and any pending decisions. It does not call the LLM or any external service directly — it schedules Activities to do that work and waits for their results.
+The Workflow is the durable brain of your agent. It holds the conversation history and any pending state. It never calls the LLM or any external service directly — it schedules Activities for that work and waits for their results.
+
+Rather than accepting a single task string at start, the Workflow exposes a `send_message` **Update** that the client calls once per user turn. The Update handler delivers the message and suspends until the `run` loop finishes the turn. The `run` loop owns the full plan → act → observe logic — it waits for a turn to arrive, executes all Activity calls, sets the reply, then loops back to wait for the next turn.
+
+Keeping the loop in `run` makes the execution path easier to trace: the Workflow history shows a clear sequence of turn-wait → activity calls → reply for each user message. Updates still give the client a synchronous reply without polling.
 
 ```python
 import asyncio
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import timedelta
 from typing import Optional
 from temporalio import workflow
@@ -66,61 +70,123 @@ with workflow.unsafe.imports_passed_through():
 
 @dataclass
 class AgentInput:
-    task: str
-    system_prompt: str
-
-@dataclass
-class AgentState:
-    task: str
-    system_prompt: str
-    messages: list[dict] = field(default_factory=list)
-    step: int = 0
+    system_prompt: str  # Initial instructions; user messages arrive via Update
 
 @workflow.defn
 class AgentWorkflow:
-    MAX_STEPS = 50  # Hard cap before forcing completion
+    MAX_STEPS_PER_TURN = 20  # LLM + tool iterations allowed per user message
+
+    def __init__(self) -> None:
+        self._system_prompt: str = ""
+        self._messages: list[dict] = []
+        self._done: bool = False
+        self._turn_ready: bool = False
+        self._reply: Optional[str] = None
+
+    # ── Update: one call per user turn ───────────────────────────────────────
+
+    @workflow.update
+    async def send_message(self, user_message: str) -> str:
+        """Deliver a user message and block the caller until the agent replies.
+
+        Appends the message and signals the run loop that a new turn is ready,
+        then suspends until the loop finishes processing and sets the reply.
+        """
+        self._messages.append({"role": "user", "content": user_message})
+        self._turn_ready = True
+        await workflow.wait_condition(lambda: self._reply is not None)
+        reply = self._reply
+        self._reply = None
+        return reply
+
+    # ── Signal: end the session ───────────────────────────────────────────────
+
+    @workflow.signal
+    def end_session(self) -> None:
+        """Cleanly terminate the Workflow after the current turn completes."""
+        self._done = True
+
+    # ── Query: read conversation state ────────────────────────────────────────
+
+    @workflow.query
+    def get_messages(self) -> list[dict]:
+        """Return the full conversation history — safe to call at any time."""
+        return self._messages
+
+    # ── Main loop ─────────────────────────────────────────────────────────────
 
     @workflow.run
     async def run(self, input: AgentInput) -> str:
-        state = AgentState(task=input.task, system_prompt=input.system_prompt)
-        state.messages.append({"role": "user", "content": input.task})
+        self._system_prompt = input.system_prompt
 
-        while state.step < self.MAX_STEPS:
-            # Step 1: Ask the LLM what to do next
-            response = await workflow.execute_activity(
-                call_llm,
-                args=[state.system_prompt, state.messages],
-                start_to_close_timeout=timedelta(minutes=5),
+        while not self._done:
+            # Block until a new user turn arrives or the session ends.
+            # wait_condition is durable — no worker thread is consumed while waiting.
+            await workflow.wait_condition(
+                lambda: self._turn_ready or self._done
             )
+            if self._done:
+                break
+            self._turn_ready = False
 
-            state.messages.append({"role": "assistant", "content": response.content})
-            state.step += 1
+            # Agent loop: plan → act → observe, up to MAX_STEPS_PER_TURN iterations
+            for _ in range(self.MAX_STEPS_PER_TURN):
+                response = await workflow.execute_activity(
+                    call_llm,
+                    args=[self._system_prompt, self._messages],
+                    start_to_close_timeout=timedelta(minutes=5),
+                )
+                self._messages.append({"role": "assistant", "content": response.content})
 
-            # Step 2: If the LLM is done, return the final answer
-            if response.is_final:
-                return response.content
+                if response.is_final:
+                    # Signal the Update handler that the reply is ready
+                    self._reply = response.content
+                    break
 
-            # Step 3: Execute the tool calls the LLM requested
-            if response.tool_calls:
-                tool_results = await asyncio.gather(*[
-                    workflow.execute_activity(
-                        execute_tool,
-                        args=[tc.name, tc.arguments],
-                        start_to_close_timeout=timedelta(minutes=2),
-                    )
-                    for tc in response.tool_calls
-                ])
-                for tc, result in zip(response.tool_calls, tool_results):
-                    state.messages.append({
-                        "role": "tool",
-                        "tool_call_id": tc.id,
-                        "content": result,
-                    })
+                if response.tool_calls:
+                    tool_results = await asyncio.gather(*[
+                        workflow.execute_activity(
+                            execute_tool,
+                            args=[tc.name, tc.arguments],
+                            start_to_close_timeout=timedelta(minutes=2),
+                        )
+                        for tc in response.tool_calls
+                    ])
+                    for tc, result in zip(response.tool_calls, tool_results):
+                        self._messages.append({
+                            "role": "tool",
+                            "tool_call_id": tc.id,
+                            "content": result,
+                        })
+            else:
+                raise ApplicationError(
+                    f"Agent exceeded {self.MAX_STEPS_PER_TURN} steps in a single turn",
+                    non_retryable=True,
+                )
 
-        raise ApplicationError(
-            f"Agent exceeded {self.MAX_STEPS} steps without completing",
-            non_retryable=True,
-        )
+        return "Session ended"
+```
+
+**Client usage**
+
+```python
+# Start the long-lived Workflow — no initial task string required
+handle = await client.start_workflow(
+    AgentWorkflow.run,
+    AgentInput(system_prompt="You are a helpful assistant."),
+    id="agent-session-123",
+    task_queue="ai-agents-prd",
+)
+
+# Each user turn is a blocking Update — returns once the agent has replied
+reply = await handle.execute_update(AgentWorkflow.send_message, "What is Temporal?")
+print(reply)  # "Temporal is a durable execution platform..."
+
+reply = await handle.execute_update(AgentWorkflow.send_message, "How does it handle failures?")
+print(reply)
+
+# End the session when the user is done
+await handle.signal(AgentWorkflow.end_session)
 ```
 
 ## LLM retry strategy
@@ -300,11 +366,12 @@ For lower-latency interactive use cases (e.g., a chatbot where the user is activ
 
 For conversational agents — where a user sends messages, the agent responds, proposes a tool call, waits for the user to confirm, and then continues — the [temporal-ai-agent](https://github.com/temporal-community/temporal-ai-agent/blob/main/workflows/agent_goal_workflow.py) reference implementation uses three signals and a central `workflow.wait_condition` loop:
 
-| Signal | Purpose |
+| Signal / Update | Purpose |
 |---|---|
-| `user_prompt(prompt)` | User sends a chat message; appended to a queue for ordered processing |
-| `confirm()` | User approves a proposed tool action; sets a boolean the loop checks |
-| `end_chat()` | User ends the session; sets a flag that causes the loop to return |
+| `user_prompt(prompt)` | Signal — user sends a chat message; appended to a queue for ordered processing |
+| `confirm()` | Signal — user approves a proposed tool action; sets a boolean the loop checks |
+| `respond_to_action(approved, reason)` | **Update** — approve or reject a proposed action; returns a status string synchronously to the caller |
+| `end_chat()` | Signal — user ends the session; sets a flag that causes the loop to return |
 
 The Workflow blocks in a `while True` loop waiting for any of these signals, then branches on which flag changed:
 
@@ -322,6 +389,8 @@ class AgentGoalWorkflow:
     def __init__(self) -> None:
         self.prompt_queue: Deque[str] = deque()
         self.confirmed: bool = False
+        self.rejected: bool = False
+        self.rejection_reason: str = ""
         self.chat_ended: bool = False
         self.conversation_history: List[dict] = []
         self._pending_tool: Optional[str] = None
@@ -340,6 +409,20 @@ class AgentGoalWorkflow:
     async def confirm(self) -> None:
         """User approves the proposed tool action."""
         self.confirmed = True
+
+    @workflow.update
+    async def respond_to_action(self, approved: bool, reason: str = "") -> str:
+        """Approve or reject a proposed tool action.
+
+        Returns a status string synchronously to the caller — prefer this over
+        the bare `confirm` Signal when the client needs acknowledgment.
+        """
+        if approved:
+            self.confirmed = True
+            return "Action approved"
+        self.rejected = True
+        self.rejection_reason = reason
+        return f"Action rejected: {reason}"
 
     @workflow.signal
     async def end_chat(self) -> None:
@@ -360,19 +443,20 @@ class AgentGoalWorkflow:
         waiting_for_confirm = False
 
         while True:
-            # Block until any signal arrives — no polling, no busy-waiting.
+            # Block until any signal or update arrives — no polling, no busy-waiting.
             # The Workflow sleeps durably; no worker thread is consumed.
             await workflow.wait_condition(
                 lambda: bool(self.prompt_queue)
                         or self.chat_ended
                         or self.confirmed
+                        or self.rejected
             )
 
             # Branch 1: end_chat signal received
             if self.chat_ended:
                 return str(self.conversation_history)
 
-            # Branch 2: confirm signal received — execute the pending tool
+            # Branch 2: confirm signal/update received — execute the pending tool
             if self.confirmed and waiting_for_confirm and self._pending_tool:
                 self.confirmed = False
                 waiting_for_confirm = False
@@ -385,6 +469,17 @@ class AgentGoalWorkflow:
                     {"actor": "tool", "response": tool_result}
                 )
                 self._pending_tool = None
+                continue
+
+            # Branch 2b: rejected via respond_to_action Update — cancel pending tool
+            if self.rejected and waiting_for_confirm:
+                self.rejected = False
+                waiting_for_confirm = False
+                self.conversation_history.append(
+                    {"actor": "system", "response": f"Action rejected: {self.rejection_reason}"}
+                )
+                self._pending_tool = None
+                self.rejection_reason = ""
                 continue
 
             # Branch 3: new user message — call LLM, decide next step
@@ -410,7 +505,8 @@ Key points from the [temporal-ai-agent implementation](https://github.com/tempor
 
 - **Queue over direct execution**: `user_prompt` appends to `prompt_queue` instead of triggering computation immediately, so back-to-back signals are always processed in order.
 - **Zero-cost blocking**: `workflow.wait_condition` with no timeout blocks durably — the Workflow persists its state in Temporal without consuming a worker thread while waiting for the next message.
-- **Three-way branch**: The loop's single `wait_condition` condition covers all three signals; the `if/elif` chain inside determines what happened. This avoids nested `wait_condition` calls that are harder to reason about.
+- **Four-way branch**: The loop's single `wait_condition` condition covers all signals and updates; the `if` chain inside determines what happened. This avoids nested `wait_condition` calls that are harder to reason about.
+- **Update for proposal responses**: `respond_to_action` is a `@workflow.update` — after the agent proposes a tool call the client can call it to approve or reject and receive a synchronous acknowledgment. The bare `confirm` Signal is retained for simple cases that don't need a return value.
 - **Queries never block**: `get_conversation_history` is a `@workflow.query` — the UI can call it at any time to render the current chat thread without interrupting the running loop.
 - **Continue-as-new on long conversations**: after `MAX_TURNS_BEFORE_CONTINUE` iterations the workflow calls `continue_as_new`, passing the conversation summary and prompt queue, so event history never grows unbounded.
 
