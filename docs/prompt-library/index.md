@@ -22,11 +22,6 @@ A curated collection of prompts for use with AI coding tools (Claude, Copilot, C
 Use these prompts to understand how Temporal works, explore core concepts, and visualize workflow execution.
 
 <div class="prompt-grid-single-row">
-  <a class="prompt-card" href="prompt-library/learning/compare-to-alternatives">
-    <span class="prompt-card-icon">⚖️</span>
-    <p class="prompt-card-title">Compare to Alternatives</p>
-    <p class="prompt-card-desc">Understand how Temporal compares to queues, cron jobs, or other orchestration tools.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/learning/explain-temporal-concepts">
     <span class="prompt-card-icon">📚</span>
     <p class="prompt-card-title">Explain Temporal Concepts</p>
@@ -106,20 +101,10 @@ Use these prompts when operating, updating, or optimizing workflows already runn
     <p class="prompt-card-title">Debug a Stuck Workflow</p>
     <p class="prompt-card-desc">Diagnose why a workflow is blocked and generate a plan to unblock it safely.</p>
   </a>
-  <a class="prompt-card" href="prompt-library/maintaining/deprecate-workflow">
-    <span class="prompt-card-icon">🗑️</span>
-    <p class="prompt-card-title">Deprecate a Workflow</p>
-    <p class="prompt-card-desc">Drain and retire a workflow version while keeping in-flight executions safe.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/maintaining/monitor-worker-health">
     <span class="prompt-card-icon">📊</span>
     <p class="prompt-card-title">Monitor Worker Health</p>
     <p class="prompt-card-desc">Generate queries and dashboards to monitor worker saturation, task latency, and errors.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/maintaining/namespace-changes">
-    <span class="prompt-card-icon">🗂️</span>
-    <p class="prompt-card-title">Namespace Changes</p>
-    <p class="prompt-card-desc">Safely migrate workflows or update namespace configuration with minimal downtime.</p>
   </a>
   <a class="prompt-card" href="prompt-library/maintaining/optimize-performance">
     <span class="prompt-card-icon">🚀</span>

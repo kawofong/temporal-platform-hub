@@ -45,4 +45,3 @@ For each concept:
 
 - [Visualize a Workflow](./visualize-workflow.md)
 - [Explain Workflow History](./explain-workflow-history.md)
-- [Compare to Alternatives](./compare-to-alternatives.md)

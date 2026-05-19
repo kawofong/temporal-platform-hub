@@ -41,4 +41,3 @@ Requirements:
 ## Related prompts
 
 - [Replay from History](../testing/replay-from-history.md)
-- [Deprecate a Workflow](./deprecate-workflow.md)
