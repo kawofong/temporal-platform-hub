@@ -33,6 +33,10 @@ Requirements:
 
 > Add an example of what good output looks like for your team's use cases.
 
+## Using the Temporal Developer Skill
+
+Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** in your AI coding assistant before running this prompt. With the skill active, your assistant understands Temporal's execution guarantees and will implement compensations that account for partial failures, activity retries, and replay safety — without you needing to explain the durable execution model.
+
 ## Tips
 
 - Compensation activities should be non-retryable only if they genuinely cannot succeed — most should retry.

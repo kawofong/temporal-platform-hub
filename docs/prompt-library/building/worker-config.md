@@ -33,6 +33,10 @@ Requirements:
 
 > Add an example of what good output looks like for your team's use cases.
 
+## Using the Temporal Developer Skill
+
+Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** in your AI coding assistant before running this prompt. With the skill active, your assistant understands Temporal's concurrency model and poller mechanics, so it will recommend concurrency settings that match your activity characteristics (I/O-bound vs. CPU-bound) without generic boilerplate explanations.
+
 ## Tips
 
 - I/O-bound activities benefit from higher concurrency; CPU-bound activities should match core count.

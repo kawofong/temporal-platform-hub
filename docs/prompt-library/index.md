@@ -43,6 +43,12 @@ Use these prompts to understand how Temporal works, explore core concepts, and v
 
 Use these prompts when designing and implementing new Temporal workflows and activities.
 
+:::tip Use the Temporal Developer Skill
+The **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** gives AI coding assistants deep, up-to-date knowledge of the Temporal SDK and best practices. Activate it in your AI tool before running any of the prompts below. With the skill active, your assistant understands Temporal-specific patterns (durable execution, determinism constraints, activity heartbeating, etc.) out of the box — so your prompts can focus on business logic instead of re-explaining the framework.
+
+**Recommended workflow:** activate the skill once at the start of a session, then run the build prompts in sequence as you scaffold, implement, and wire up your workflow.
+:::
+
 <div class="prompt-grid">
   <a class="prompt-card" href="prompt-library/building/child-workflows">
     <span class="prompt-card-icon">🌿</span>

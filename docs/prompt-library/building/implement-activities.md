@@ -31,6 +31,10 @@ For each activity:
 
 > Add an example of what good output looks like for your team's use cases.
 
+## Using the Temporal Developer Skill
+
+Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** in your AI coding assistant before running this prompt. With the skill active, your assistant understands the difference between schedule-to-close, start-to-close, and heartbeat timeouts and will apply them correctly by default — so your prompt can focus on the activity's business logic and external dependencies rather than timeout semantics.
+
 ## Tips
 
 - Specify which errors from external services should be non-retryable (e.g., 400 Bad Request vs 500).

@@ -28,6 +28,10 @@ Refactoring goals:
 
 > Add an example of what good output looks like for your team's use cases.
 
+## Using the Temporal Developer Skill
+
+Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** in your AI coding assistant before running this prompt. With the skill active, your assistant understands parent-close policies, cancellation scopes, and history limits out of the box — so the prompt can stay focused on your specific refactoring goals rather than teaching the framework.
+
 ## Tips
 
 - Consider `ABANDON` parent-close policy for child workflows that should complete independently.

@@ -34,6 +34,10 @@ Requirements:
 
 > Add an example of what good output looks like for your team's use cases.
 
+## Using the Temporal Developer Skill
+
+Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** in your AI coding assistant before running this prompt. With the skill active, your assistant knows the threading and determinism constraints that apply to signal and query handlers across SDKs, so it won't accidentally generate handlers that mutate state unsafely or block a query.
+
 ## Tips
 
 - Signals are async — if you need synchronous interaction, consider using an Update instead.

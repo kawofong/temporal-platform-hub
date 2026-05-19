@@ -30,6 +30,10 @@ Requirements:
 
 > Add an example of what good output looks like for your team's use cases.
 
+## Using the Temporal Developer Skill
+
+Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-developer-skill)** in your AI coding assistant before running this prompt. With the skill active, your assistant already understands Temporal's workflow and activity model, so you can skip re-explaining the framework and focus the prompt entirely on your business process. The skill is especially helpful here because it guides the assistant to flag steps that should be child workflows and apply correct timeout defaults without being told.
+
 ## Tips
 
 - Be specific about the SDK language — output quality varies significantly between languages.
