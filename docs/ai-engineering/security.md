@@ -11,7 +11,7 @@ toc_max_heading_level: 3
 This page is part of the [Temporal Platform Hub](../intro.md).
 :::
 
-AI workloads introduce data security and governance concerns that don't appear in traditional Temporal applications. Prompts and completions often contain PII, proprietary business context, or regulated financial data. The third-party AI providers that process this data (OpenAI, Anthropic, etc.) are subject to heightened enterprise security scrutiny. This page covers how ABC Financial addresses these concerns.
+AI workloads introduce data security and governance concerns that don't always appear in traditional Temporal applications. Prompts and completions often contain PII, proprietary business context, or regulated financial data. The third-party AI providers that process this data (OpenAI, Anthropic, etc.) are subject to heightened enterprise security scrutiny. This page covers how ABC Financial addresses these concerns.
 
 For additional background, see [How to protect sensitive data in a Temporal application](https://temporal.io/blog/how-to-protect-sensitive-data-in-a-temporal-application).
 
@@ -55,13 +55,14 @@ Without payload encryption, every prompt you send to an LLM — including any PI
 
 ## Credential management for AI provider APIs
 
-### The wrong way: long-lived API keys in Worker config
+### The traditional way: long-lived API keys in Worker config
 
-Long-lived API keys (e.g., `OPENAI_API_KEY`) baked into Worker environment variables are the most common credential anti-pattern in AI workloads:
+Long-lived API keys (e.g., `NETWORK_VENDOR_API_KEY`) baked into Worker environment variables are the most common credential pattern in non-I workloads. 
 
-- Keys are often over-scoped (full account access rather than per-project)
+However, this pattern may not be ideal for AI use cases:
+
+- **Keys are often over-scoped** (full account access rather than at the agent or user level)
 - Rotation is disruptive (requires Worker restart or redeployment)
-- Keys can be leaked through logs, crash dumps, or over-broad IAM access
 - They cannot be scoped to the identity of the *user* who initiated the request
 
 ### The right way: short-lived credentials fetched per Activity

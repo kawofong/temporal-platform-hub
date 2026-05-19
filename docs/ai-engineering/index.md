@@ -31,8 +31,27 @@ At ABC Financial, engineering teams use Temporal as the durable backbone for AI 
 
 - [**Reference Architecture**](./reference-architecture.md) — How to structure an agentic stack with Temporal: where the orchestrator Workflow lives, how tool calls map to Activities, how to handle LLM retries correctly, and where the human-in-the-loop gate sits.
 - [**AI Patterns**](./patterns.md) — Five production-tested patterns for LLM Activities, human-in-the-loop approval gates, prompt versioning, parallel tool dispatch, and long-running agent loops with history pruning.
-- [**Platform Agent**](./platform-agent.md) — Build a single reusable agent Workflow that every team can invoke with their own system prompt, context, and tools — so retry logic, HITL gates, and audit history are built in and never re-implemented.
+- [**Agent Framework**](./agent-framework.md) — An internal shared agent framework: one reusable Workflow every team invokes with their own system prompt, context, and tools — retry logic, HITL gates, and audit history are built once and inherited by all teams.
 - [**Security & Governance**](./security.md) — Payload encryption for LLM I/O, credential management for third-party AI providers, namespace isolation for sensitive AI workloads, and audit trail for model governance.
+
+## Temporal AI use cases at ABC Financial
+
+The following are representative AI workloads where ABC Financial engineering teams use Temporal as the durable backbone. They serve as a placeholder for your organization to document and showcase your own Temporal AI use cases.
+
+| Use case | Pattern | Why Temporal |
+| :---- | :---- | :---- |
+| **Regulatory document review** | Long-running agent loop with HITL approval | Compliance reviewers approve or reject AI recommendations via Signal before the agent proceeds; the full decision trail is in Workflow history for audit |
+| **Fraud detection pipeline** | ML inference Activity with structured retries | Model inference calls are Activities; rate-limit backoff respects `Retry-After`; failed inference steps resume from the last successful checkpoint rather than restarting the full pipeline |
+| **Customer inquiry agent** | Shared agent framework with per-team tools | The platform team owns retry logic and HITL gates; the customer-service team registers their own CRM lookup and policy search Activities on a dedicated Worker |
+| **FinOps cost analysis** | Parallel tool dispatch | Cloud cost lookups, budget checks, and forecast queries are dispatched concurrently via `asyncio.gather`; the agent returns a unified summary in one durable execution |
+| **Loan application processing** | Human-in-the-loop approval gate | The AI pre-screens applications and surfaces a recommendation; a credit officer approves or rejects via Signal within a configurable SLA window before any downstream action is taken |
+| **Model governance audit** | Immutable Workflow history as audit trail | Every prompt sent to the LLM and every tool call result is captured in Workflow history — providing a complete record for EU AI Act compliance and internal model governance review |
+| **Customer support agent** | Shared agent framework with per-team tools | A durable conversational agent handles customer enquiries end-to-end — looking up account history, raising tickets, and escalating to a human representative if and when the agent cannot resolve the issue |
+| **Financial advice agent** | Long-running agent loop with HITL approval | A personalised advisor agent analyses a customer's portfolio and spending patterns, drafts recommendations, and routes them through a licensed adviser approval gate before any advice is delivered |
+| **Future credit analysis** | ML inference Activity with structured retries | Forward-looking credit scoring runs multiple model inference calls as Activities; each step is checkpointed so a partial run survives worker restarts without reprocessing upstream data |
+| **Market engagement analysis** | Parallel tool dispatch | Sentiment analysis, news summarisation, and competitor-price lookups are dispatched concurrently across Activities; results are aggregated in the Workflow and published to downstream systems durably |
+
+---
 
 ## Key resources
 

@@ -1,9 +1,9 @@
 ---
 sidebar_position: 5
-id: ai-platform-agent
-title: AI Platform Agent
-sidebar_label: 🏭 Platform Agent
-description: Build a single reusable Temporal Workflow that every team can invoke with their own system prompt, context, and tools — so the platform team builds the infrastructure once and product teams never hand-roll retry logic, HITL plumbing, or continue-as-new again.
+id: ai-agent-framework
+title: AI Agent Framework
+sidebar_label: 🏭 Agent Framework
+description: An internal shared agent framework — one reusable Temporal Workflow that every team invokes with their own system prompt, context, and tools, so retry logic, HITL gates, and audit history are built once by the platform team and inherited by all product teams.
 toc_max_heading_level: 3
 ---
 
@@ -11,15 +11,15 @@ toc_max_heading_level: 3
 This page is part of the [Temporal Platform Hub](../intro.md).
 :::
 
-Many AI Engineering implementations are scattered, with each team building their own agent Workflows. That works for a single team but doesn't scale: every team ends up hand-rolling the same retry policy, the same human-in-the-loop plumbing, the same `continue_as_new` logic, and the same heartbeating boilerplate. The platform agent pattern centralises all of that once and exposes a single invocation interface — **send in a system prompt, some context, and a list of tools, and get back a durable AI agent.**
+Many AI Engineering implementations are scattered, with each team building their own agent Workflows. That works for a single team but doesn't scale: every team ends up hand-rolling the same retry policy, the same human-in-the-loop plumbing, the same `continue_as_new` logic, and the same heartbeating boilerplate. The shared agent framework pattern centralises all of that once and exposes a single invocation interface — **send in a system prompt, some context, and a list of tools, and get back a durable AI agent.**
 
 At ABC Financial, the platform team owns and deploys one `PlatformAgentWorkflow`. Each product team runs their own Temporal Worker, registers their own tool Activities on it, and starts a Workflow execution with their own prompt, context, and tool list. **The Workflow is the shared piece — Workers are not.** Teams inherit retries, HITL gates, audit history, and long-run safety without writing a single line of Workflow code.
 
 ---
 
-## Why a platform agent
+## Why a shared agent framework
 
-| Without a platform agent | With a platform agent |
+| Without a shared agent framework | With a shared agent framework |
 | :---- | :---- |
 | Every team writes their own agent Workflow | One Workflow, maintained by the AI Eng platform team |
 | Every team has to figure out guardrails  | Centralised, consistently correct guardrails with hooks for custom needs |
@@ -323,7 +323,7 @@ Every `task_queue` value declared in a `ToolDefinition` must have at least one r
 
 ---
 
-## Calling the platform agent
+## Calling the agent framework
 
 Any team starts a `PlatformAgentWorkflow` execution by constructing a `PlatformAgentInput` with their own prompt, context, and tools. No Temporal infrastructure knowledge is required beyond this:
 
@@ -401,17 +401,17 @@ The Workflow dispatches to the correct queue via the `task_queue` field on each 
 
 ### Namespace isolation
 
-For workloads that process regulated or sensitive data, run the platform agent in a dedicated namespace with its own encryption key. See [Security & Governance](./security.md) for payload encryption setup and namespace configuration.
+For workloads that process regulated or sensitive data, run the agent framework in a dedicated namespace with its own encryption key. See [Security & Governance](./security.md) for payload encryption setup and namespace configuration.
 
 ### Cross-namespace calls with Nexus
 
 When teams operate in separate Temporal Namespaces, standard `workflow.execute_activity` dispatch only reaches Workers in the same Namespace. [Temporal Nexus](https://docs.temporal.io/nexus) bridges this gap: it provides a durable, peer-to-peer RPC layer that routes Operation calls from a caller Namespace to a handler Namespace through a registered Nexus Endpoint — with built-in retries, circuit breaking, and observability.
 
-Two patterns arise in the platform agent context.
+Two patterns arise in the shared agent framework context.
 
-#### Invoking the platform agent from a team Namespace
+#### Invoking the agent framework from a team Namespace
 
-The most common pattern: a team's Workflows live in their own Namespace and invoke the platform agent in the platform Namespace through a Nexus Endpoint, without direct access to the platform Namespace.
+The most common pattern: a team's Workflows live in their own Namespace and invoke the shared agent framework in the platform Namespace through a Nexus Endpoint, without direct access to the platform Namespace.
 
 **Handler side** — the platform team wraps `PlatformAgentWorkflow` in a Nexus Service:
 
@@ -454,7 +454,7 @@ worker = Worker(
 )
 ```
 
-**Caller side** — a team Workflow in a different Namespace calls the platform agent via the Endpoint. The team only imports the shared service contract, not any platform internals:
+**Caller side** — a team Workflow in a different Namespace calls the agent framework via the Endpoint. The team only imports the shared service contract, not any platform internals:
 
 ```python
 # finops/workflows.py — runs in the finops namespace
@@ -505,7 +505,7 @@ temporal operator nexus endpoint create \
 
 #### Team tools as Nexus Operations
 
-Conversely, if the `PlatformAgentWorkflow` runs in the platform Namespace but a team's tool Activities run in a separate Namespace, the team wraps their tools as Nexus Operations. The platform Workflow calls them via `workflow.create_nexus_client()` using a shared service contract that the team publishes alongside their Nexus handler. This follows the same handler/caller pattern above — the team is the handler, the platform agent is the caller.
+Conversely, if the `PlatformAgentWorkflow` runs in the platform Namespace but a team's tool Activities run in a separate Namespace, the team wraps their tools as Nexus Operations. The platform Workflow calls them via `workflow.create_nexus_client()` using a shared service contract that the team publishes alongside their Nexus handler. This follows the same handler/caller pattern above — the team is the handler, the shared agent framework is the caller.
 
 See the [Nexus Python feature guide](https://docs.temporal.io/develop/python/nexus/feature-guide) for complete handler and caller implementation examples.
 
@@ -543,7 +543,7 @@ This provides a full, queryable audit trail of which team ran which agent, with 
 
 ## Additional resources
 
-- [temporal-ai-agent](https://github.com/temporal-community/temporal-ai-agent) — Reference implementation the platform agent pattern is derived from
+- [temporal-ai-agent](https://github.com/temporal-community/temporal-ai-agent) — Reference implementation the shared agent framework pattern is derived from
 - [Reference Architecture](./reference-architecture.md) — Deep dive on the orchestrator Workflow, LLM retry strategy, and HITL gate
 - [AI Patterns](./patterns.md) — Human-in-the-loop approval, continue-as-new, and parallel tool dispatch patterns referenced above
 - [Security & Governance](./security.md) — Payload encryption, namespace isolation, and credential management for AI workloads
