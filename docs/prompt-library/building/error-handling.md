@@ -40,4 +40,3 @@ Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-t
 ## Related prompts
 
 - [Implement Activities](./implement-activities.md)
-- [Saga / Compensation](./saga-pattern.md)

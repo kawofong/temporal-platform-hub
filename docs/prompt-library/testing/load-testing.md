@@ -40,4 +40,3 @@ Please generate:
 ## Related prompts
 
 - [Worker Configuration](../building/worker-config.md)
-- [Monitor Worker Health](../maintaining/monitor-worker-health.md)

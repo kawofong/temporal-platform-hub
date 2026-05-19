@@ -46,4 +46,3 @@ Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-t
 ## Related prompts
 
 - [Design a New Workflow](./design-workflow.md)
-- [Test Workflow Logic](../testing/test-workflow-logic.md)

@@ -44,4 +44,3 @@ Please:
 ## Related prompts
 
 - [Analyze Workflow History](./analyze-history.md)
-- [Monitor Worker Health](./monitor-worker-health.md)

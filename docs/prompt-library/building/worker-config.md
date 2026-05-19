@@ -44,5 +44,4 @@ Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-t
 
 ## Related prompts
 
-- [Monitor Worker Health](../maintaining/monitor-worker-health.md)
 - [Load Testing](../testing/load-testing.md)

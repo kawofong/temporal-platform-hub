@@ -39,5 +39,3 @@ Do not use the Temporal test environment for activity unit tests — test the fu
 
 ## Related prompts
 
-- [Mock External Services](./mock-external-services.md)
-- [Test Workflow Logic](./test-workflow-logic.md)

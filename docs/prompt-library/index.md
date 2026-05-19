@@ -70,11 +70,6 @@ The **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-d
     <p class="prompt-card-title">Implement Activities</p>
     <p class="prompt-card-desc">Generate activity stubs with correct retry policies, timeouts, and heartbeating.</p>
   </a>
-  <a class="prompt-card" href="prompt-library/building/saga-pattern">
-    <span class="prompt-card-icon">🔄</span>
-    <p class="prompt-card-title">Saga / Compensation</p>
-    <p class="prompt-card-desc">Implement the saga pattern with compensating transactions for distributed consistency.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/building/signals-queries">
     <span class="prompt-card-icon">📡</span>
     <p class="prompt-card-title">Signals & Queries</p>
@@ -107,16 +102,6 @@ Use these prompts when operating, updating, or optimizing workflows already runn
     <p class="prompt-card-title">Debug a Stuck Workflow</p>
     <p class="prompt-card-desc">Diagnose why a workflow is blocked and generate a plan to unblock it safely.</p>
   </a>
-  <a class="prompt-card" href="prompt-library/maintaining/monitor-worker-health">
-    <span class="prompt-card-icon">📊</span>
-    <p class="prompt-card-title">Monitor Worker Health</p>
-    <p class="prompt-card-desc">Generate queries and dashboards to monitor worker saturation, task latency, and errors.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/maintaining/optimize-performance">
-    <span class="prompt-card-icon">🚀</span>
-    <p class="prompt-card-title">Optimize Performance</p>
-    <p class="prompt-card-desc">Identify and resolve workflow performance issues including latency and throughput bottlenecks.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/maintaining/update-retry-policies">
     <span class="prompt-card-icon">🔁</span>
     <p class="prompt-card-title">Update Retry Policies</p>
@@ -134,40 +119,15 @@ Use these prompts when operating, updating, or optimizing workflows already runn
 Use these prompts when writing, improving, or running tests for Temporal workflows and activities.
 
 <div class="prompt-grid">
-  <a class="prompt-card" href="prompt-library/testing/integration-testing">
-    <span class="prompt-card-icon">🔗</span>
-    <p class="prompt-card-title">Integration Testing</p>
-    <p class="prompt-card-desc">Write end-to-end tests that run against a real Temporal server in CI.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/testing/load-testing">
     <span class="prompt-card-icon">📈</span>
     <p class="prompt-card-title">Load Testing</p>
     <p class="prompt-card-desc">Generate a load test plan to validate worker capacity and workflow throughput targets.</p>
   </a>
-  <a class="prompt-card" href="prompt-library/testing/mock-external-services">
-    <span class="prompt-card-icon">🤖</span>
-    <p class="prompt-card-title">Mock External Services</p>
-    <p class="prompt-card-desc">Replace external API calls and database interactions with test doubles.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/testing/regression-testing">
-    <span class="prompt-card-icon">🔬</span>
-    <p class="prompt-card-title">Regression Testing</p>
-    <p class="prompt-card-desc">Build a regression suite to catch behavioral regressions across workflow versions.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/testing/replay-from-history">
     <span class="prompt-card-icon">⏪</span>
     <p class="prompt-card-title">Replay from History</p>
     <p class="prompt-card-desc">Replay a production workflow history to detect non-determinism after a code change.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/testing/simulate-failures">
-    <span class="prompt-card-icon">💥</span>
-    <p class="prompt-card-title">Simulate Failures</p>
-    <p class="prompt-card-desc">Inject activity failures and timeouts to verify retry and compensation behavior.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/testing/test-workflow-logic">
-    <span class="prompt-card-icon">🧩</span>
-    <p class="prompt-card-title">Test Workflow Logic</p>
-    <p class="prompt-card-desc">Use the Temporal test environment to assert workflow state transitions and outcomes.</p>
   </a>
   <a class="prompt-card" href="prompt-library/testing/unit-test-activities">
     <span class="prompt-card-icon">🧪</span>
