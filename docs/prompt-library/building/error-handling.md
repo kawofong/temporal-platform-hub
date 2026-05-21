@@ -14,7 +14,7 @@ Replace the placeholder prompt below with the version your team has validated. A
 ```
 Review the following Temporal workflow and activity code and improve its error handling in [Python/Go/TypeScript/Java].
 
-[Paste your code here]
+[Reference the workflow and activity files to review, e.g., src/workflows/order_workflow.py — OrderWorkflow, src/activities/payment_activities.py — PaymentActivities]
 
 Improvements needed:
 - Identify activities with missing or overly broad retry policies and suggest better defaults
@@ -34,7 +34,7 @@ Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-t
 
 ## Tips
 
-- Paste the actual code rather than describing it — the model will catch specific issues you might miss.
+- Reference specific workflow and activity classes rather than describing them in the abstract — the model will catch issues you might miss.
 - Ask it to list the failure modes it identified before generating the fix.
 
 ## Related prompts

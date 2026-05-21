@@ -14,7 +14,7 @@ Replace the placeholder prompt below with the version your team has validated. A
 ```
 Add timer and scheduling logic to the following Temporal workflow in [Python/Go/TypeScript/Java].
 
-[Paste your existing workflow code or describe the scheduling requirement]
+[Reference the workflow class to update, or describe the scheduling requirement, e.g., src/workflows/order_workflow.py — OrderWorkflow]
 
 Requirements:
 [Choose what applies:]

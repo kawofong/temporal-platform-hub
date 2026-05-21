@@ -14,7 +14,7 @@ Replace the placeholder prompt below with the version your team has validated. A
 ```
 Refactor the following Temporal workflow in [Python/Go/TypeScript/Java] to use child workflows.
 
-[Paste your existing workflow code]
+[Reference the workflow class to refactor, e.g., src/workflows/order_workflow.py — OrderWorkflow]
 
 Refactoring goals:
 - Identify logical sub-processes that would benefit from independent execution history

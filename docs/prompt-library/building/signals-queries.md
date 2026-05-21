@@ -14,7 +14,7 @@ Replace the placeholder prompt below with the version your team has validated. A
 ```
 Add signal and query handlers to the following Temporal workflow in [Python/Go/TypeScript/Java].
 
-[Paste your existing workflow code]
+[Reference the workflow class to update, e.g., src/workflows/order_workflow.py — OrderWorkflow]
 
 Signals to add:
 [e.g., "cancel — allows external systems to request graceful cancellation"]
