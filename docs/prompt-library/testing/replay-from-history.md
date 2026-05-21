@@ -34,7 +34,3 @@ Please generate:
 - Export histories from workflows that exercised different code paths — one happy-path history isn't enough.
 - Run replay tests before deploying any workflow code change to catch non-determinism early.
 
-## Related prompts
-
-- [Analyze Workflow History](../maintaining/analyze-history.md)
-- [Workflow Versioning](../maintaining/workflow-versioning.md)

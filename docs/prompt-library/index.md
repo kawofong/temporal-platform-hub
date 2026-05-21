@@ -92,25 +92,10 @@ The **[Temporal Developer Skill](https://temporal.io/blog/introducing-temporal-d
 Use these prompts when operating, updating, or optimizing workflows already running in production.
 
 <div class="prompt-grid">
-  <a class="prompt-card" href="prompt-library/maintaining/analyze-history">
-    <span class="prompt-card-icon">📜</span>
-    <p class="prompt-card-title">Analyze Workflow History</p>
-    <p class="prompt-card-desc">Interpret a workflow event history to identify failures, bottlenecks, or unexpected behavior.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/maintaining/debug-stuck-workflow">
     <span class="prompt-card-icon">🔍</span>
     <p class="prompt-card-title">Debug a Stuck Workflow</p>
     <p class="prompt-card-desc">Diagnose why a workflow is blocked and generate a plan to unblock it safely.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/maintaining/update-retry-policies">
-    <span class="prompt-card-icon">🔁</span>
-    <p class="prompt-card-title">Update Retry Policies</p>
-    <p class="prompt-card-desc">Review and tune retry policies across activities based on failure rate observations.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/maintaining/workflow-versioning">
-    <span class="prompt-card-icon">🏷️</span>
-    <p class="prompt-card-title">Workflow Versioning</p>
-    <p class="prompt-card-desc">Add versioning to safely deploy breaking changes without disrupting running workflows.</p>
   </a>
 </div>
 
@@ -119,19 +104,9 @@ Use these prompts when operating, updating, or optimizing workflows already runn
 Use these prompts when writing, improving, or running tests for Temporal workflows and activities.
 
 <div class="prompt-grid">
-  <a class="prompt-card" href="prompt-library/testing/load-testing">
-    <span class="prompt-card-icon">📈</span>
-    <p class="prompt-card-title">Load Testing</p>
-    <p class="prompt-card-desc">Generate a load test plan to validate worker capacity and workflow throughput targets.</p>
-  </a>
   <a class="prompt-card" href="prompt-library/testing/replay-from-history">
     <span class="prompt-card-icon">⏪</span>
     <p class="prompt-card-title">Replay from History</p>
     <p class="prompt-card-desc">Replay a production workflow history to detect non-determinism after a code change.</p>
-  </a>
-  <a class="prompt-card" href="prompt-library/testing/unit-test-activities">
-    <span class="prompt-card-icon">🧪</span>
-    <p class="prompt-card-title">Unit Test Activities</p>
-    <p class="prompt-card-desc">Write unit tests for activity implementations with mocked dependencies.</p>
   </a>
 </div>

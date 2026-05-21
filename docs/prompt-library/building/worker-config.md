@@ -42,6 +42,3 @@ Activate the **[Temporal Developer Skill](https://temporal.io/blog/introducing-t
 - I/O-bound activities benefit from higher concurrency; CPU-bound activities should match core count.
 - Include your organization's standard namespace and connection config in the prompt for accurate output.
 
-## Related prompts
-
-- [Load Testing](../testing/load-testing.md)

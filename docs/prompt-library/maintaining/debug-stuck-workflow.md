@@ -41,6 +41,3 @@ Please:
 - Paste the actual event history if you can — it dramatically improves diagnosis quality.
 - Always try `temporal workflow describe` and check pending activities before escalating.
 
-## Related prompts
-
-- [Analyze Workflow History](./analyze-history.md)

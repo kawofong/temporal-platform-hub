@@ -45,7 +45,7 @@ This is a **durable, interactive deep-research system** built on Temporal. A sin
 
 ## Workflow Diagram
 
-```mermaid
+Render the following mermaid diagram:
 flowchart TD
     A([User submits query via UI]) -->|start_research update| B[Workflow unblocks\nrecords original_query]
 
