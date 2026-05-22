@@ -79,12 +79,16 @@ Replace with use cases from your domain. See [Customer Stories](https://temporal
 
 ### AI/ML
 
+:::tip
+See the [AI Engineering](./ai-engineering/index.md) section for production patterns, reference architecture, and security guidance specific to AI workloads.
+:::
+
 1. **ML inference**
-   * **Why Temporal is perfect**: Multi-model orchestration with fallback logic, batch and real-time handling, feature engineering, and comprehensive audit trail.
+   * **Why Temporal is perfect**: Multi-model pipelines often involve 3–5 sequential steps: embedding, retrieval, reranking, generation, and evaluation. Each step can fail independently. Temporal wraps each LLM or model call in a durable Activity, so a failure at step 4 does not re-run steps 1–3. Fallback logic (try GPT-4o, fall back to Claude if unavailable) is expressed as ordinary conditional code. The Activity history gives model governance teams a built-in record of which model made which decision on which input — without any custom logging infrastructure.
 2. **RAG**
-   * **Why Temporal is perfect**: Multi-step retrieval with hybrid search, context assembly from multiple sources, LLM orchestration with retries and fallbacks, and evaluation pipeline tracking.
+   * **Why Temporal is perfect**: Retrieval-augmented generation typically fans out across multiple sources — vector stores, keyword indices, internal APIs — then assembles context within a token budget before calling the LLM. Temporal's parallel Activity dispatch handles the fan-out and convergence naturally. Rate limit backoff, context window management, and evaluation-triggered retry loops are all first-class concerns in an Activity-based design, replacing fragile custom orchestration glue.
 3. **AI agents**
-   * **Why Temporal is perfect**: Long-running autonomous execution with tool orchestration, planning and replanning, human-in-the-loop controls, durable memory management, and safety guardrails.
+   * **Why Temporal is perfect**: Autonomous agents run multi-step loops — plan, act, observe, plan again — that can last minutes (a coding task) or days (a research project). Most agent frameworks keep state in memory and lose everything when the process restarts. Temporal persists the full agent state (message history, tool results, step count) durably, so a crashed Worker resumes the agent exactly where it left off. Human-in-the-loop gates — pausing for reviewer approval before a high-risk action — use Temporal's native Signal and Update primitives rather than polling tables or webhook plumbing. See [AI Engineering → Reference Architecture](./ai-engineering/reference-architecture.md) for the canonical pattern.
 
 ### Operational
 
