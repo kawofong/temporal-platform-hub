@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 13
 id: faqs
 title: Frequently Asked Questions
 sidebar_label: ❓ FAQs

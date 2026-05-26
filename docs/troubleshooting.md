@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 11
 id: troubleshooting
 title: Troubleshooting
 sidebar_label: 🔧 Troubleshooting

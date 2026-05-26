@@ -1,8 +1,8 @@
 ---
-sidebar_position: 13
-id: prompt-library
-title: Prompt Library
-sidebar_label: 💬 Prompt Library
+sidebar_position: 10
+id: ai-prompt-library
+title: AI Prompt Library
+sidebar_label: 💬 AI Prompt Library
 description: A centralized repository of recommended prompts for engineers and business users building, maintaining, and testing Temporal workflows with AI coding tools.
 toc_max_heading_level: 2
 ---
