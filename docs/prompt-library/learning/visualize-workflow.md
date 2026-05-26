@@ -84,32 +84,6 @@ flowchart TD
 
 ---
 
-## How Each Temporal Primitive Is Used
-
-| Primitive | Where | Purpose |
-|---|---|---|
-| `@workflow.run` | `InteractiveResearchWorkflow.run()` | Main entry — starts blocked, drives agent loop |
-| `@workflow.update` | `start_research`, `submit_elicitation_response` | Durable user inputs; FE sends these via the backend |
-| `@workflow.query` | `get_status` | Non-mutating read of current phase + elicitation state for UI polling |
-| `@workflow.signal` | `end_workflow_signal` | Fire-and-forget cancellation; sets `workflow_ended = True` |
-| `workflow.wait_condition` | `tool_elicit_user`, `run()` | Coroutine-level blocking — workflow sleeps until user answers or cancels |
-| `workflow.execute_activity` | `query_data_warehouse`, `generate_research_image` | Non-deterministic I/O (external API calls) moved out of the workflow |
-
----
-
-## Key Design Decisions
-
-**Elicitation contract (exactly 2 questions):** The workflow enforces this structurally — `run_parallel_research` raises `ApplicationError` if fewer than 2 elicitations are completed. The agent can't skip ahead.
-
-**`progress_plan` on first call:** The agent commits topic-specific UI labels on its very first `elicit_user` call. The workflow rejects the call if this is missing, ensuring the UI always has meaningful progress text.
-
-**`query_data_warehouse` + `generate_research_image` in parallel:** The system prompt instructs the agent to issue these in the same turn. The OpenAI SDK executes parallel tool calls concurrently, and both are backed by Temporal activities — `DataWarehouseLookup` has a fixed-interval retry policy (up to 10 retries), while image generation has a 180-second `start_to_close_timeout`.
-
-**No `finalize_report` tool:** The orchestrator's terminal action is emitting a `FinalizeReportRequest` as its `output_type` (structured response), not a tool call. This avoids a failure mode where gpt-5 would serialize large payloads as a text message instead of a function call, leaving `research_completed = False`.
-
-**Research workers are in-process sub-agents:** Each `ResearchWorkerAgent` (gpt-5-mini) runs via `Runner.run()` inside the workflow's activity context — they're lightweight, web-search-only, and failures are caught per-worker so one bad subquery doesn't kill the whole fan-out. `FinalizeReportRequest` requires `min_length=3` on `search_summaries`, so at least 3 of the 4–6 dispatched workers must succeed.
-```
-
 ## Tips
 
 - Mermaid diagrams render natively in GitHub, Notion, and many wikis — paste the output directly.
