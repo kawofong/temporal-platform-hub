@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 12
 id: support
 title: Get Help from the Temporal Team
 sidebar_label: 🆘 Support
